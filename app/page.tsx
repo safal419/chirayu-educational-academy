@@ -1,17 +1,18 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import Hero from "@/components/home/hero"
-import QuickStats from "@/components/home/quick-stats"
-import WhyChooseUs from "@/components/home/why-choose-us"
-import AcademicHighlights from "@/components/home/academic-highlights"
-import FacilitiesOverview from "@/components/home/facilities-overview"
-import LatestNotices from "@/components/home/latest-notices"
-import UpcomingEvents from "@/components/home/upcoming-events"
-import NewsUpdates from "@/components/home/news-updates"
-import SEEResults from "@/components/home/see-results"
-import PhotoGallery from "@/components/home/photo-gallery"
-import Testimonials from "@/components/home/testimonials"
+import { motion } from "framer-motion";
+import Hero from "@/components/home/hero";
+import QuickStats from "@/components/home/quick-stats";
+import WhyChooseUs from "@/components/home/why-choose-us";
+import AcademicHighlights from "@/components/home/academic-highlights";
+import FacilitiesOverview from "@/components/home/facilities-overview";
+import LatestNotices from "@/components/home/latest-notices";
+import UpcomingEvents from "@/components/home/upcoming-events";
+import NewsUpdates from "@/components/home/news-updates";
+import SEEResults from "@/components/home/see-results";
+import PhotoGallery from "@/components/home/photo-gallery";
+import Testimonials from "@/components/home/testimonials";
+import PopupImage from "@/components/PopupImage";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -21,7 +22,7 @@ const containerVariants = {
       staggerChildren: 0.2,
     },
   },
-}
+};
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -33,11 +34,12 @@ const sectionVariants = {
       ease: "easeOut",
     },
   },
-}
+};
 
 export default function HomePage() {
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible">
+      <PopupImage />
       <motion.div variants={sectionVariants}>
         <Hero />
       </motion.div>
@@ -82,5 +84,5 @@ export default function HomePage() {
         <Testimonials />
       </motion.div>
     </motion.div>
-  )
+  );
 }

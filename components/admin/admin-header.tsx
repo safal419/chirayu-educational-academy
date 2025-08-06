@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useRouter } from "next/navigation"
-import { Menu, User, LogOut, Settings, Home } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation";
+import { Menu, User, LogOut, Settings, Home } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,34 +10,40 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 interface AdminHeaderProps {
-  onMenuClick: () => void
+  onMenuClick: () => void;
 }
 
 export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
-  const router = useRouter()
+  const router = useRouter();
 
   const handleLogout = () => {
-    localStorage.removeItem("adminAuth")
-    router.push("/admin/login")
-  }
+    localStorage.removeItem("adminAuth");
+    window.location.replace("/");
+  };
 
   const goToMainSite = () => {
-    window.open("/", "_blank")
-  }
+    window.open("/", "_blank");
+  };
 
   return (
     <header className="h-16 bg-white shadow-sm flex items-center justify-between px-4 lg:px-6">
       <div className="flex items-center space-x-4">
-        <Button variant="ghost" size="sm" onClick={onMenuClick} className="lg:hidden p-2 hover:bg-gray-100 rounded-lg">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onMenuClick}
+          className="lg:hidden p-2 hover:bg-gray-100 rounded-lg"
+        >
           <Menu className="h-6 w-6 text-gray-600" />
         </Button>
 
         <div>
-          <h1 className="text-xl font-semibold text-gray-900">Admin Dashboard</h1>
-          <p className="text-sm text-gray-500">Chirayu Educational Academy</p>
+          <h1 className="text-xl font-semibold text-gray-900">
+            Admin Dashboard
+          </h1>
         </div>
       </div>
 
@@ -56,7 +62,10 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
         {/* User Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded-lg">
+            <Button
+              variant="ghost"
+              className="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded-lg"
+            >
               <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-md">
                 <User className="h-4 w-4 text-white" />
               </div>
@@ -66,7 +75,10 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
               </div>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56 bg-white shadow-xl border-0">
+          <DropdownMenuContent
+            align="end"
+            className="w-56 bg-white shadow-xl border-0"
+          >
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="hover:bg-gray-50">
@@ -78,7 +90,10 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
               <span>Settings</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} className="text-red-600 hover:bg-red-50">
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="text-red-600 hover:bg-red-50"
+            >
               <LogOut className="mr-2 h-4 w-4" />
               <span>Log out</span>
             </DropdownMenuItem>
@@ -86,5 +101,5 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
         </DropdownMenu>
       </div>
     </header>
-  )
+  );
 }

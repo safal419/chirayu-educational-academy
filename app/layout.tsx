@@ -3,8 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/lib/config";
-import Navbar from "@/components/layout/navbar";
-import Footer from "@/components/layout/footer";
+import ClientLayoutWrapper from "@/components/layout/client-layout-wrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -49,7 +48,6 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
-  generator: "v0.dev",
 };
 
 export default function RootLayout({
@@ -60,35 +58,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ConditionalLayout>{children}</ConditionalLayout>
+        <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
       </body>
     </html>
-  );
-}
-
-function ConditionalLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
-    </>
-  );
-}
-
-function ClientLayoutWrapper({ children }: { children: React.ReactNode }) {
-  if (typeof window !== "undefined") {
-    const isAdminRoute = window.location.pathname.startsWith("/admin");
-
-    if (isAdminRoute) {
-      return <>{children}</>;
-    }
-  }
-
-  // For server-side rendering, check if it's an admin route
-  return (
-    <>
-      <Navbar />
-      <main className="min-h-screen">{children}</main>
-      <Footer />
-    </>
   );
 }

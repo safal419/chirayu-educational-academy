@@ -50,7 +50,7 @@ export default function QuickStats() {
               key={stat.label}
               initial={{ opacity: 0, scale: 0.5 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
+              transition={{ duration: 0.8, delay: index * 0.1, ease: "easeIn" }}
               viewport={{ once: true }}
               whileHover={{
                 scale: 1.05,

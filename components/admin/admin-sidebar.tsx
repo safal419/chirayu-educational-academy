@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
   FileText,
@@ -18,12 +18,12 @@ import {
   ImageIcon,
   X,
   GraduationCap,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface AdminSidebarProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 const menuItems = [
@@ -64,23 +64,30 @@ const menuItems = [
     href: "/admin/settings",
     icon: Settings,
   },
-]
+];
 
 export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
-  const pathname = usePathname()
-  const [expandedItems, setExpandedItems] = useState<string[]>(["Content Management", "Academic"])
+  const pathname = usePathname();
+  const [expandedItems, setExpandedItems] = useState<string[]>([
+    "Content Management",
+    "Academic",
+  ]);
 
   const toggleExpanded = (title: string) => {
-    setExpandedItems((prev) => (prev.includes(title) ? prev.filter((item) => item !== title) : [...prev, title]))
-  }
+    setExpandedItems((prev) =>
+      prev.includes(title)
+        ? prev.filter((item) => item !== title)
+        : [...prev, title]
+    );
+  };
 
   const isActive = (href: string) => {
-    return pathname === href
-  }
+    return pathname === href;
+  };
 
   const isParentActive = (children: any[]) => {
-    return children.some((child) => pathname === child.href)
-  }
+    return children.some((child) => pathname === child.href);
+  };
 
   return (
     <>
@@ -117,7 +124,12 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                 <p className="text-xs text-gray-500">Chirayu Academy</p>
               </div>
             </div>
-            <Button variant="ghost" size="sm" onClick={onClose} className="lg:hidden">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClose}
+              className="lg:hidden"
+            >
               <X className="h-5 w-5" />
             </Button>
           </div>
@@ -132,7 +144,9 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                       <button
                         onClick={() => toggleExpanded(item.title)}
                         className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-all duration-200 hover:bg-gray-50 hover:shadow-sm ${
-                          isParentActive(item.children) ? "bg-blue-50 text-blue-700 shadow-sm" : "text-gray-700"
+                          isParentActive(item.children)
+                            ? "bg-blue-50 text-blue-700 shadow-sm"
+                            : "text-gray-700"
                         }`}
                       >
                         <div className="flex items-center space-x-3">
@@ -165,7 +179,9 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                                   }`}
                                 >
                                   <child.icon className="h-4 w-4" />
-                                  <span className="text-sm font-medium">{child.title}</span>
+                                  <span className="text-sm font-medium">
+                                    {child.title}
+                                  </span>
                                 </Link>
                               </li>
                             ))}
@@ -207,5 +223,5 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
         </div>
       </motion.aside>
     </>
-  )
+  );
 }

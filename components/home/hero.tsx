@@ -29,6 +29,7 @@ export default function Hero() {
           {/* Left Content */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
+            y
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             className="text-center lg:text-left"
