@@ -1,0 +1,264 @@
+"use client"
+
+import type React from "react"
+
+import { useState } from "react"
+import { Phone, Mail, MapPin, Clock, Send } from "lucide-react"
+import { siteConfig } from "@/lib/config"
+
+export default function ContactPage() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+    inquiryType: "general",
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Handle form submission here
+    console.log("Form submitted:", formData)
+    alert("Thank you for your inquiry! We will get back to you soon!")
+    // Reset form
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: "",
+      inquiryType: "general",
+    })
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    })
+  }
+
+  return (
+    <div className="py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Contact Us</h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Get in touch with us for admissions, inquiries, or any questions about Chirayu Educational Academy. We're
+            here to help!
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Contact Information */}
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Get in Touch</h2>
+              <div className="space-y-6">
+                <div className="flex items-start space-x-4">
+                  <div className="bg-blue-100 p-3 rounded-full">
+                    <Phone className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Phone</h3>
+                    <p className="text-gray-600">{siteConfig.contact.phone}</p>
+                    <p className="text-sm text-gray-500">Mon - Fri, 8:00 AM - 5:00 PM</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="bg-blue-100 p-3 rounded-full">
+                    <Mail className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Email</h3>
+                    <p className="text-gray-600">{siteConfig.contact.email}</p>
+                    <p className="text-sm text-gray-500">We'll respond within 24 hours</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="bg-blue-100 p-3 rounded-full">
+                    <MapPin className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Address</h3>
+                    <p className="text-gray-600">{siteConfig.contact.address}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="bg-blue-100 p-3 rounded-full">
+                    <Clock className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Office Hours</h3>
+                    <div className="text-gray-600 space-y-1">
+                      <p>Monday - Friday: 8:00 AM - 5:00 PM</p>
+                      <p>Saturday: 9:00 AM - 3:00 PM</p>
+                      <p>Sunday: Closed</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Map Placeholder */}
+            <div className="bg-gray-200 rounded-lg h-64 flex items-center justify-center">
+              <div className="text-center">
+                <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-2" />
+                <p className="text-gray-500">Interactive Map</p>
+                <p className="text-sm text-gray-400">Indrayani-4, Kathmandu</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Form */}
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h2>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Your full name"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="your.email@example.com"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="+977-XX-XXXXXXX"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="inquiryType" className="block text-sm font-medium text-gray-700 mb-2">
+                    Inquiry Type
+                  </label>
+                  <select
+                    id="inquiryType"
+                    name="inquiryType"
+                    value={formData.inquiryType}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="general">General Inquiry</option>
+                    <option value="admission">Admission</option>
+                    <option value="academic">Academic Programs</option>
+                    <option value="facilities">Facilities</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                  Subject *
+                </label>
+                <input
+                  type="text"
+                  id="subject"
+                  name="subject"
+                  required
+                  value={formData.subject}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Brief subject of your inquiry"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                  Message *
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  required
+                  rows={6}
+                  value={formData.message}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Please provide details about your inquiry..."
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+              >
+                <Send className="h-5 w-5 mr-2" />
+                Send Message
+              </button>
+            </form>
+          </div>
+        </div>
+
+        {/* Additional Information */}
+        <div className="mt-16 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl p-8">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Ready to Join Our Community?</h3>
+            <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+              Take the first step towards your child's bright future. Contact us today to learn more about our admission
+              process and academic programs.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="/academics/programs"
+              className="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              View Academic Programs
+            </a>
+            <a
+              href="/about/history"
+              className="inline-flex items-center px-8 py-3 border-2 border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
+            >
+              Learn About Us
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
