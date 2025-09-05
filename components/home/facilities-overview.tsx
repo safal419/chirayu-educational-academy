@@ -16,53 +16,55 @@ export default function FacilitiesOverview() {
   const facilities = [
     {
       icon: Monitor,
-      title: "Smart Classrooms",
+      title: "Computer Lab",
       description:
-        "Interactive whiteboards and digital learning tools in every classroom",
+        "Equipped with basic computers and internet access for ICT classes.",
       image: "/school-classroom-students.png",
-      features: [
-        "Interactive Whiteboards",
-        "High-Speed Internet",
-        "Audio-Visual Systems",
-      ],
+      features: ["Desktop Computers", "Internet Access", "ICT Training"],
     },
     {
       icon: FlaskConical,
       title: "Science Laboratory",
       description:
-        "Fully equipped physics, chemistry, and biology labs for hands-on learning",
+        "Shared labs for practical experiments in physics, chemistry, and biology.",
       image: "/school-science-laboratory.png",
-      features: ["Modern Equipment", "Safety Protocols", "Experiment Kits"],
+      features: [
+        "Basic Lab Equipment",
+        "Safety Guidelines",
+        "Hands-on Experiments",
+      ],
     },
     {
       icon: BookOpen,
-      title: "Digital Library",
+      title: "Library",
       description:
-        "Extensive collection of books, journals, and digital resources",
+        "Collection of textbooks, reference books, and storybooks for students.",
       image: "/school-library.png",
-      features: ["10,000+ Books", "Digital Catalog", "Study Areas"],
+      features: ["Textbooks", "Reference Materials", "Study Corner"],
     },
     {
       icon: Dumbbell,
-      title: "Sports Complex",
+      title: "Playground & Sports",
       description:
-        "Multi-purpose sports facilities for various indoor and outdoor activities",
+        "Open ground for football, cricket, volleyball, and other sports activities.",
       image: "/school-sports.png",
-      features: ["Basketball Court", "Football Field", "Indoor Games"],
+      features: ["Football Ground", "Volleyball Court", "Indoor Games"],
     },
     {
       icon: Palette,
-      title: "Art Studio",
-      description: "Creative spaces for art, craft, and design activities",
+      title: "Arts & Cultural Activities",
+      description:
+        "Programs for art, craft, dance, and cultural events throughout the year.",
       image: "/art-studio-students.png",
-      features: ["Art Supplies", "Exhibition Space", "Creative Workshops"],
+      features: ["Art Classes", "Dance & Drama", "Cultural Programs"],
     },
     {
       icon: Music,
-      title: "Music Room",
-      description: "Dedicated space for music education and cultural programs",
+      title: "Music & Extra-Curricular",
+      description:
+        "Facilities for music practice, debates, quiz contests, and annual events.",
       image: "/school-cultural-program.png",
-      features: ["Musical Instruments", "Recording Setup", "Performance Stage"],
+      features: ["Musical Instruments", "Debates & Quiz", "Annual Programs"],
     },
   ];
 

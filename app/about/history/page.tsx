@@ -13,50 +13,50 @@ import {
 
 const timelineEvents = [
   {
-    year: "2055 B.S.",
+    year: "2062 B.S. / 2006 A.D.",
     title: "Foundation",
     description:
-      "Chirayu Educational Academy was established with a vision to provide quality education in Kathmandu.",
+      "Chirayu Educational Academy was founded in Indrayani-4, Kathmandu, registered formally in February 2006.",
     icon: Building,
     color: "blue",
   },
   {
-    year: "2058 B.S.",
-    title: "First Graduation",
+    year: "2068 B.S. / 2011 A.D.",
+    title: "First Batch of SEE Graduates",
     description:
-      "Our first batch of Grade 10 students graduated with outstanding SEE results.",
+      "Celebrated first SEE graduates—early students achieved promising results.",
     icon: Trophy,
     color: "green",
   },
   {
-    year: "2062 B.S.",
-    title: "Infrastructure Expansion",
+    year: "2072 B.S. / 2015 A.D.",
+    title: "Infrastructure Development",
     description:
-      "Added modern science laboratories, computer lab, and expanded library facilities.",
+      "Upgraded infrastructure with a basic science lab and expanded library resources.",
     icon: Building,
     color: "purple",
   },
   {
-    year: "2065 B.S.",
-    title: "Academic Excellence",
+    year: "2074 B.S. / 2017 A.D.",
+    title: "Consistent Academic Performance",
     description:
-      "Achieved 100% pass rate in SEE examinations for three consecutive years.",
+      "Achieved an outstanding pass rate in SEE for consecutive years.",
     icon: Award,
     color: "yellow",
   },
   {
-    year: "2070 B.S.",
-    title: "Technology Integration",
+    year: "2078 B.S. / 2021 A.D.",
+    title: "First ICT Integration",
     description:
-      "Introduced smart classrooms and digital learning platforms for enhanced education.",
+      "Introduced a computer lab for ICT classes and digital support in learning.",
     icon: BookOpen,
     color: "indigo",
   },
   {
-    year: "2075 B.S.",
-    title: "500+ Students",
+    year: "2081 B.S. / 2024 A.D.",
+    title: "Growing Community",
     description:
-      "Reached a milestone of 500+ students with 25+ dedicated faculty members.",
+      "Reached 500+ enrolled students, supported by a growing faculty team.",
     icon: Users,
     color: "red",
   },

@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Card, CardContent } from "@/components/ui/card"
+import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   BookOpen,
   Microscope,
@@ -14,80 +14,74 @@ import {
   Camera,
   Heart,
   Users,
-} from "lucide-react"
+  Palette,
+  Globe,
+} from "lucide-react";
 
 const facilities = [
   {
-    name: "Modern Library",
-    description: "Well-stocked library with over 10,000 books, digital resources, and quiet study areas for students.",
+    name: "Library",
+    description:
+      "A focused collection of textbooks, reference books, and reading materials for varied grade levels.",
     icon: BookOpen,
     color: "blue",
-    features: ["10,000+ Books", "Digital Resources", "Reading Areas", "Study Rooms"],
+    features: ["Textbooks & Reference", "Reading Corner", "Quiet Study Area"],
+    image: "/school-library.png",
   },
   {
-    name: "Science Laboratories",
-    description: "Fully equipped physics, chemistry, and biology labs with modern instruments and safety equipment.",
+    name: "Science Laboratory",
+    description:
+      "Shared lab facilities for physics, chemistry, and biology, supporting hands-on learning.",
     icon: Microscope,
     color: "green",
-    features: ["Physics Lab", "Chemistry Lab", "Biology Lab", "Safety Equipment"],
+    features: [
+      "Basic Lab Instruments",
+      "Demonstration Area",
+      "Safety Guidelines",
+    ],
+    image: "/school-science-laboratory.png",
   },
   {
-    name: "Computer Laboratory",
-    description: "State-of-the-art computer lab with high-speed internet and latest software for digital learning.",
+    name: "Computer Lab",
+    description:
+      "A small computer lab providing basic ICT exposure and digital literacy opportunities.",
     icon: Monitor,
     color: "purple",
-    features: ["30 Computers", "High-Speed Internet", "Latest Software", "Programming Tools"],
+    features: ["Desktop Computers", "ICT Classes", "Internet Access"],
+    image: "/school-classroom-students.png",
   },
   {
-    name: "Sports Facilities",
-    description: "Multi-purpose sports ground, basketball court, and indoor games room for physical development.",
+    name: "Playground & Sports",
+    description:
+      "An open ground for sports activities like football, volleyball, and morning assemblies.",
     icon: Dumbbell,
     color: "orange",
-    features: ["Football Ground", "Basketball Court", "Indoor Games", "Sports Equipment"],
+    features: [
+      "Football/Volleyball Space",
+      "Morning Exercise",
+      "Basic Sports Gear",
+    ],
+    image: "/school-sports.png",
   },
   {
-    name: "Music & Arts Room",
-    description: "Dedicated spaces for music, dance, and visual arts with instruments and art supplies.",
-    icon: Music,
+    name: "Arts & Cultural Space",
+    description:
+      "A space to engage in arts, music, dance, and cultural programs that develop creative skills.",
+    icon: Palette,
     color: "pink",
-    features: ["Musical Instruments", "Art Supplies", "Dance Floor", "Exhibition Space"],
+    features: ["Art Supplies", "Cultural Events", "Music & Drama Practice"],
+    image: "/school-cultural-program.png",
   },
   {
-    name: "Transportation",
-    description: "Safe and reliable school bus service covering major areas of Kathmandu valley.",
-    icon: Bus,
-    color: "indigo",
-    features: ["Multiple Routes", "Trained Drivers", "GPS Tracking", "Safety Measures"],
-  },
-  {
-    name: "Cafeteria",
-    description: "Hygienic cafeteria serving nutritious meals and snacks prepared with fresh ingredients.",
-    icon: Utensils,
-    color: "yellow",
-    features: ["Nutritious Meals", "Fresh Ingredients", "Hygienic Preparation", "Variety of Options"],
-  },
-  {
-    name: "Security System",
-    description: "24/7 security with CCTV surveillance and trained security personnel for student safety.",
-    icon: Shield,
-    color: "red",
-    features: ["24/7 Security", "CCTV Surveillance", "Trained Personnel", "Access Control"],
-  },
-  {
-    name: "Smart Classrooms",
-    description: "Technology-enabled classrooms with projectors, smart boards, and audio-visual equipment.",
-    icon: Monitor,
+    name: "Parent-School App",
+    description:
+      "A communication platform (mobile app) for parents to track attendance, assignments, and notices.",
+    icon: Globe,
     color: "teal",
-    features: ["Smart Boards", "Projectors", "Audio System", "Interactive Learning"],
+    features: ["Attendance Alerts", "Homework & Notices", "Teacher Messaging"],
+    image: "/school-classroom-students.png", // reused path
   },
-  {
-    name: "Medical Room",
-    description: "Well-equipped medical room with qualified nurse for immediate healthcare needs.",
-    icon: Heart,
-    color: "rose",
-    features: ["Qualified Nurse", "First Aid", "Medical Equipment", "Emergency Care"],
-  },
-]
+];
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -97,7 +91,7 @@ const containerVariants = {
       staggerChildren: 0.1,
     },
   },
-}
+};
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -109,13 +103,21 @@ const itemVariants = {
       ease: "easeOut",
     },
   },
-}
+};
 
 export default function FacilitiesPage() {
   return (
-    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="min-h-screen">
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="min-h-screen"
+    >
       {/* Hero Section */}
-      <motion.section variants={itemVariants} className="bg-gradient-to-br from-blue-50 to-indigo-100 py-20">
+      <motion.section
+        variants={itemVariants}
+        className="bg-gradient-to-br from-blue-50 to-indigo-100 py-20"
+      >
         <div className="container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 font-poppins">
@@ -125,8 +127,9 @@ export default function FacilitiesPage() {
               </span>
             </h1>
             <p className="text-xl text-gray-600 leading-relaxed">
-              Modern infrastructure and world-class facilities designed to provide the best learning environment for our
-              students' academic and personal growth.
+              Modern infrastructure and world-class facilities designed to
+              provide the best learning environment for our students' academic
+              and personal growth.
             </p>
           </div>
         </div>
@@ -137,25 +140,43 @@ export default function FacilitiesPage() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {facilities.map((facility, index) => (
-              <motion.div key={index} variants={itemVariants} whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                whileHover={{ y: -5 }}
+                transition={{ duration: 0.2 }}
+              >
                 <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 h-full">
                   <CardContent className="p-6">
                     <div className="text-center mb-6">
                       <div
                         className={`w-16 h-16 bg-${facility.color}-100 rounded-full flex items-center justify-center mx-auto mb-4`}
                       >
-                        <facility.icon className={`w-8 h-8 text-${facility.color}-600`} />
+                        <facility.icon
+                          className={`w-8 h-8 text-${facility.color}-600`}
+                        />
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">{facility.name}</h3>
-                      <p className="text-gray-600 text-sm leading-relaxed">{facility.description}</p>
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">
+                        {facility.name}
+                      </h3>
+                      <p className="text-gray-600 text-sm leading-relaxed">
+                        {facility.description}
+                      </p>
                     </div>
 
                     <div className="space-y-2">
-                      <h4 className="font-semibold text-gray-900 text-sm">Key Features:</h4>
+                      <h4 className="font-semibold text-gray-900 text-sm">
+                        Key Features:
+                      </h4>
                       <div className="grid grid-cols-2 gap-2">
                         {facility.features.map((feature, idx) => (
-                          <div key={idx} className="flex items-center text-xs text-gray-600">
-                            <div className={`w-2 h-2 bg-${facility.color}-500 rounded-full mr-2`}></div>
+                          <div
+                            key={idx}
+                            className="flex items-center text-xs text-gray-600"
+                          >
+                            <div
+                              className={`w-2 h-2 bg-${facility.color}-500 rounded-full mr-2`}
+                            ></div>
                             <span>{feature}</span>
                           </div>
                         ))}
@@ -176,7 +197,9 @@ export default function FacilitiesPage() {
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-poppins">
               Infrastructure at a Glance
             </h2>
-            <p className="text-xl text-gray-600">Numbers that showcase our commitment to quality education</p>
+            <p className="text-xl text-gray-600">
+              Numbers that showcase our commitment to quality education
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -184,7 +207,7 @@ export default function FacilitiesPage() {
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="w-8 h-8 text-blue-600" />
               </div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-2">25</h3>
+              <h3 className="text-3xl font-bold text-gray-900 mb-2">15+</h3>
               <p className="text-gray-600">Classrooms</p>
             </motion.div>
 
@@ -192,7 +215,7 @@ export default function FacilitiesPage() {
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Microscope className="w-8 h-8 text-green-600" />
               </div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-2">5</h3>
+              <h3 className="text-3xl font-bold text-gray-900 mb-2">2</h3>
               <p className="text-gray-600">Laboratories</p>
             </motion.div>
 
@@ -200,7 +223,7 @@ export default function FacilitiesPage() {
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <BookOpen className="w-8 h-8 text-purple-600" />
               </div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-2">10,000+</h3>
+              <h3 className="text-3xl font-bold text-gray-900 mb-2">1,000+</h3>
               <p className="text-gray-600">Books</p>
             </motion.div>
 
@@ -219,8 +242,12 @@ export default function FacilitiesPage() {
       <motion.section variants={itemVariants} className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-poppins">Safety & Security</h2>
-            <p className="text-xl text-gray-600">Your child's safety is our top priority</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-poppins">
+              Safety & Security
+            </h2>
+            <p className="text-xl text-gray-600">
+              Your child's safety is our top priority
+            </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -228,9 +255,12 @@ export default function FacilitiesPage() {
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Shield className="w-8 h-8 text-red-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">24/7 Security</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">
+                24/7 Security
+              </h3>
               <p className="text-gray-600">
-                Round-the-clock security with trained personnel and CCTV surveillance throughout the campus.
+                Round-the-clock security with trained personnel and CCTV
+                surveillance throughout the campus.
               </p>
             </motion.div>
 
@@ -238,10 +268,12 @@ export default function FacilitiesPage() {
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Camera className="w-8 h-8 text-blue-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">CCTV Monitoring</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">
+                CCTV Monitoring
+              </h3>
               <p className="text-gray-600">
-                Comprehensive CCTV coverage in all common areas, classrooms, and entry/exit points for enhanced
-                security.
+                Comprehensive CCTV coverage in all common areas, classrooms, and
+                entry/exit points for enhanced security.
               </p>
             </motion.div>
 
@@ -249,14 +281,17 @@ export default function FacilitiesPage() {
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Heart className="w-8 h-8 text-green-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Medical Support</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">
+                Medical Support
+              </h3>
               <p className="text-gray-600">
-                On-campus medical room with qualified nurse for immediate healthcare and emergency response.
+                On-school medical room for immediate healthcare and emergency
+                response.
               </p>
             </motion.div>
           </div>
         </div>
       </motion.section>
     </motion.div>
-  )
+  );
 }

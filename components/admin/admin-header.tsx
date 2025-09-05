@@ -1,8 +1,17 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Menu, User, LogOut, Settings, Home } from "lucide-react";
+import {
+  Menu,
+  User,
+  LogOut,
+  Settings,
+  Home,
+  Key,
+  UserPlus,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,12 +29,28 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
   const router = useRouter();
 
   const handleLogout = () => {
+    // Clear all auth data
+    localStorage.removeItem("admin_token");
+    localStorage.removeItem("admin_user");
     localStorage.removeItem("adminAuth");
-    window.location.replace("/");
+
+    // Show logout message
+    toast.success("Logged out successfully");
+
+    // Redirect to login
+    window.location.replace("/admin/login");
   };
 
   const goToMainSite = () => {
     window.open("/", "_blank");
+  };
+
+  const goToChangePassword = () => {
+    router.push("/admin/change-password");
+  };
+
+  const goToCreateUser = () => {
+    router.push("/admin/create-user");
   };
 
   return (
@@ -39,12 +64,6 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
         >
           <Menu className="h-6 w-6 text-gray-600" />
         </Button>
-
-        <div>
-          <h1 className="text-xl font-semibold text-gray-900">
-            Admin Dashboard
-          </h1>
-        </div>
       </div>
 
       <div className="flex items-center space-x-4">
@@ -53,49 +72,35 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
           variant="outline"
           size="sm"
           onClick={goToMainSite}
-          className="flex items-center space-x-2 bg-white shadow-sm hover:shadow-md transition-all duration-200"
+          className="flex items-center space-x-2 bg-blue-300 shadow-sm hover:shadow-md transition-all duration-200"
         >
           <Home className="h-4 w-4" />
           <span>Visit Site</span>
         </Button>
 
-        {/* User Menu */}
+        {/* User Dropdown Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded-lg"
-            >
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-md">
-                <User className="h-4 w-4 text-white" />
-              </div>
-              <div className="text-left">
-                <p className="text-sm font-medium text-gray-900">Admin User</p>
-                <p className="text-xs text-gray-500">Administrator</p>
-              </div>
+            <Button variant="outline" className="flex items-center space-x-2">
+              <User className="h-4 w-4" />
+              <span>Admin</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="w-56 bg-white shadow-xl border-0"
-          >
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>User Management</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="hover:bg-gray-50">
-              <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
+            <DropdownMenuItem onClick={goToChangePassword}>
+              <Key className="h-4 w-4 mr-2" />
+              Change Password
             </DropdownMenuItem>
-            <DropdownMenuItem className="hover:bg-gray-50">
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
+            <DropdownMenuItem onClick={goToCreateUser}>
+              <UserPlus className="h-4 w-4 mr-2" />
+              Create User
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={handleLogout}
-              className="text-red-600 hover:bg-red-50"
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
+            <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+              <LogOut className="h-4 w-4 mr-2" />
+              Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

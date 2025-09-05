@@ -10,7 +10,7 @@ export default function WhyChooseUs() {
       icon: Award,
       title: "Academic Excellence",
       description:
-        "Consistently high SEE results with 95%+ pass rate and top performers in district rankings.",
+        "Consistently high SEE results with 100% pass rate and top performers in municipality rankings.",
       color: "from-blue-500 to-blue-600",
     },
     {
@@ -60,10 +60,10 @@ export default function WhyChooseUs() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Why Choose Chirayu Academy?
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-l text-gray-600 max-w-3xl mx-auto">
             Discover what makes us the preferred choice for quality education in
             Kathmandu
           </p>
@@ -122,21 +122,21 @@ export default function WhyChooseUs() {
             whileHover={{ scale: 1.05, y: -5 }}
             className="bg-white rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-300"
           >
-            <div className="text-4xl font-bold text-green-600 mb-2">2000+</div>
+            <div className="text-4xl font-bold text-green-600 mb-2">1000+</div>
             <div className="text-gray-600">Alumni Network</div>
           </motion.div>
           <motion.div
             whileHover={{ scale: 1.05, y: -5 }}
             className="bg-white rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-300"
           >
-            <div className="text-4xl font-bold text-purple-600 mb-2">95%</div>
+            <div className="text-4xl font-bold text-purple-600 mb-2">100%</div>
             <div className="text-gray-600">SEE Pass Rate</div>
           </motion.div>
           <motion.div
             whileHover={{ scale: 1.05, y: -5 }}
             className="bg-white rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-300"
           >
-            <div className="text-4xl font-bold text-orange-600 mb-2">50+</div>
+            <div className="text-4xl font-bold text-orange-600 mb-2">20+</div>
             <div className="text-gray-600">Expert Teachers</div>
           </motion.div>
         </motion.div>

@@ -2,20 +2,25 @@
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { isAuthenticated } from "@/lib/auth-utils";
 
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
-  const [isAdminAuth, setIsAdminAuth] = useState(false);
+export default function ClientLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const isAdminRoute = pathname?.startsWith("/admin");
 
-  useEffect(() => {
-    const auth = localStorage.getItem("adminAuth");
-    setIsAdminAuth(auth === "true");
-  }, []);
+  // Hide navbar and footer if it's an admin route
+  const shouldHideLayout = isAdminRoute;
 
   return (
     <>
-      {!isAdminAuth && <Navbar />}
+      {!shouldHideLayout && <Navbar />}
       {children}
-      {!isAdminAuth && <Footer />}
+      {!shouldHideLayout && <Footer />}
     </>
   );
 }

@@ -1,43 +1,46 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Calendar, MapPin, Clock, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { apiConfig } from "@/lib/config";
 
 export default function UpcomingEvents() {
-  const events = [
-    {
-      id: 1,
-      title: "Science Exhibition",
-      date: "2024-03-15",
-      time: "10:00 AM",
-      location: "School Auditorium",
-      description:
-        "Annual science exhibition showcasing innovative projects by students from all grades.",
-      image: "/science-exhibition.png",
-    },
-    {
-      id: 2,
-      title: "Cultural Program",
-      date: "2024-03-22",
-      time: "2:00 PM",
-      location: "Main Hall",
-      description:
-        "Traditional and modern cultural performances by students celebrating diversity.",
-      image: "/cultural-program.png",
-    },
-    {
-      id: 3,
-      title: "Sports Day",
-      date: "2024-04-05",
-      time: "9:00 AM",
-      location: "School Grounds",
-      description:
-        "Annual sports competition with various indoor and outdoor games for all students.",
-      image: "/school-sports-day.png",
-    },
-  ];
+  const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await axios.get(apiConfig.endpoints.events);
+        const today = new Date();
+        // Filter upcoming events only
+        const upcomingEvents = res.data.filter(
+          (event: any) => new Date(event.date) >= today
+        );
+        setEvents(upcomingEvents);
+      } catch (err) {
+        console.error("Failed to fetch events", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  if (loading)
+    return <p className="text-center mt-20 text-gray-700">Loading events...</p>;
+
+  if (events.length === 0)
+    return (
+      <p className="text-center mt-20 text-gray-700 text-xl">
+        No upcoming events available.
+      </p>
+    );
 
   return (
     <section className="py-20 bg-white relative">

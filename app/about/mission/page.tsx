@@ -1,78 +1,113 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Target, Eye, Heart, Users, BookOpen, Award, Globe, Lightbulb } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
+import { motion } from "framer-motion";
+import {
+  Target,
+  Eye,
+  Heart,
+  Users,
+  BookOpen,
+  Award,
+  Globe,
+  Lightbulb,
+} from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  },
+};
 
 export default function MissionVisionPage() {
   const values = [
     {
       icon: Heart,
       title: "Excellence",
-      description: "We strive for excellence in all aspects of education and character development.",
+      description:
+        "We strive for excellence in all aspects of education and character development.",
     },
     {
       icon: Users,
       title: "Community",
-      description: "Building a strong, supportive community of learners, educators, and families.",
+      description:
+        "Building a strong, supportive community of learners, educators, and families.",
     },
     {
       icon: BookOpen,
       title: "Innovation",
-      description: "Embracing innovative teaching methods and modern educational technologies.",
+      description:
+        "Embracing innovative teaching methods and modern educational technologies.",
     },
     {
       icon: Award,
       title: "Integrity",
-      description: "Maintaining the highest standards of honesty, ethics, and moral values.",
+      description:
+        "Maintaining the highest standards of honesty, ethics, and moral values.",
     },
-  ]
+  ];
 
   const visionGoals = [
     {
-      icon: Globe,
-      title: "Global Recognition",
-      description: "To be recognized as a leading educational institution in Nepal and beyond",
-      target: "2030",
-    },
-    {
-      icon: Lightbulb,
-      title: "Innovation Hub",
-      description: "Creating an innovation center for educational excellence and research",
-      target: "2028",
+      icon: Award,
+      title: "Academic Excellence",
+      description:
+        "Strive for 100% SEE pass rate with majority of students achieving distinction.",
+      target: "2026",
     },
     {
       icon: Users,
-      title: "Community Impact",
-      description: "Expanding our positive impact on the local and national community",
+      title: "Stronger Community Engagement",
+      description:
+        "Enhance collaboration with parents, alumni, and the local community through events and outreach programs.",
       target: "2027",
     },
     {
-      icon: Award,
-      title: "Academic Excellence",
-      description: "Achieving 100% SEE pass rate with 80% distinction holders",
-      target: "2026",
+      icon: Lightbulb,
+      title: "Technology in Education",
+      description:
+        "Introduce smart classrooms and expand ICT training for both students and teachers.",
+      target: "2028",
     },
-  ]
+    {
+      icon: Globe,
+      title: "Broader Educational Reach",
+      description:
+        "Expand facilities and programs to attract students from surrounding districts while maintaining affordability.",
+      target: "2030",
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
-          >
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">Our Mission & Vision</h1>
-            <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto">
-              Guiding principles that shape our educational philosophy and drive our commitment to excellence
+
+      {/* Hero Section */}
+      <motion.section
+        variants={itemVariants}
+        className="bg-gradient-to-br from-blue-50 to-indigo-100 py-20"
+      >
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-4xl mx-auto">
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 font-poppins">
+              Our Mission{" "}
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                & Vision
+              </span>
+            </h1>
+            <p className="text-xl text-gray-600 leading-relaxed">
+              Guiding principles that shape our educational philosophy and drive
+              our commitment to excellence
             </p>
-          </motion.div>
+          </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Mission Section */}
       <section className="py-20">
@@ -87,18 +122,23 @@ export default function MissionVisionPage() {
             <div>
               <div className="flex items-center mb-6">
                 <Target className="w-12 h-12 text-blue-600 mr-4" />
-                <h2 className="text-4xl font-bold text-gray-900">Our Mission</h2>
+                <h2 className="text-4xl font-bold text-gray-900">
+                  Our Mission
+                </h2>
               </div>
               <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-                  To provide quality education that nurtures intellectual curiosity, critical thinking, and moral values
-                  in our students. We are committed to creating a supportive learning environment that empowers every
-                  child to reach their full potential and become responsible global citizens.
+                  To provide quality education that nurtures intellectual
+                  curiosity, critical thinking, and moral values in our
+                  students. We are committed to creating a supportive learning
+                  environment that empowers every child to reach their full
+                  potential and become responsible global citizens.
                 </p>
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  Through innovative teaching methods, dedicated faculty, and comprehensive programs, we prepare our
-                  students for academic success and lifelong learning while fostering creativity, leadership, and social
-                  responsibility.
+                  Through innovative teaching methods, dedicated faculty, and
+                  comprehensive programs, we prepare our students for academic
+                  success and lifelong learning while fostering creativity,
+                  leadership, and social responsibility.
                 </p>
               </div>
             </div>
@@ -131,18 +171,22 @@ export default function MissionVisionPage() {
               </div>
               <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-                  To be recognized as a leading educational institution in Nepal, known for academic excellence,
-                  character development, and innovative teaching practices. We envision a future where our graduates
-                  become confident, compassionate, and capable leaders who contribute positively to society.
+                  To be recognized as a leading educational institution in
+                  Nepal, known for academic excellence, character development,
+                  and innovative teaching practices. We envision a future where
+                  our graduates become confident, compassionate, and capable
+                  leaders who contribute positively to society.
                 </p>
                 <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-                  We aspire to create an educational ecosystem that celebrates diversity, promotes inclusivity, and
-                  prepares students for the challenges and opportunities of the 21st century through holistic
-                  development and cutting-edge learning experiences.
+                  We aspire to create an educational ecosystem that celebrates
+                  diversity, promotes inclusivity, and prepares students for the
+                  challenges and opportunities of the 21st century through
+                  holistic development and cutting-edge learning experiences.
                 </p>
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  Creating a future where every student thrives and contributes meaningfully to society through
-                  transformative education, innovative learning, and strong moral foundations.
+                  Creating a future where every student thrives and contributes
+                  meaningfully to society through transformative education,
+                  innovative learning, and strong moral foundations.
                 </p>
               </div>
             </div>
@@ -168,7 +212,9 @@ export default function MissionVisionPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Vision 2030</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Vision 2030
+            </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Our strategic goals and aspirations for the next decade
             </p>
@@ -196,8 +242,12 @@ export default function MissionVisionPage() {
                     <span className="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold mb-3">
                       Target: {goal.target}
                     </span>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">{goal.title}</h3>
-                    <p className="text-gray-600 leading-relaxed">{goal.description}</p>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                      {goal.title}
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed">
+                      {goal.description}
+                    </p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -216,9 +266,12 @@ export default function MissionVisionPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Core Values</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Our Core Values
+            </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              The fundamental principles that guide our educational approach and institutional culture
+              The fundamental principles that guide our educational approach and
+              institutional culture
             </p>
           </motion.div>
 
@@ -239,8 +292,12 @@ export default function MissionVisionPage() {
                 <Card className="h-full shadow-lg hover:shadow-2xl transition-all duration-300 border-0">
                   <CardContent className="p-6 text-center">
                     <value.icon className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">{value.title}</h3>
-                    <p className="text-gray-600 leading-relaxed">{value.description}</p>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                      {value.title}
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed">
+                      {value.description}
+                    </p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -259,9 +316,12 @@ export default function MissionVisionPage() {
             viewport={{ once: true }}
             className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Join Our Educational Journey</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              Join Our Educational Journey
+            </h2>
             <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
-              Be part of a community that values excellence, integrity, and holistic development
+              Be part of a community that values excellence, integrity, and
+              holistic development
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.a
@@ -285,5 +345,5 @@ export default function MissionVisionPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }

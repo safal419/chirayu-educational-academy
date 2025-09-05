@@ -53,6 +53,10 @@ export default function HomePage() {
       </motion.div>
 
       <motion.div variants={sectionVariants}>
+        <LatestNotices />
+      </motion.div>
+
+      <motion.div variants={sectionVariants}>
         <AcademicHighlights />
       </motion.div>
 
@@ -61,27 +65,11 @@ export default function HomePage() {
       </motion.div>
 
       <motion.div variants={sectionVariants}>
-        <LatestNotices />
-      </motion.div>
-
-      <motion.div variants={sectionVariants}>
         <UpcomingEvents />
       </motion.div>
 
       <motion.div variants={sectionVariants}>
-        <NewsUpdates />
-      </motion.div>
-
-      <motion.div variants={sectionVariants}>
-        <SEEResults />
-      </motion.div>
-
-      <motion.div variants={sectionVariants}>
         <PhotoGallery />
-      </motion.div>
-
-      <motion.div variants={sectionVariants}>
-        <Testimonials />
       </motion.div>
     </motion.div>
   );

@@ -1,37 +1,61 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Bell, Calendar, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { apiConfig } from "@/lib/config";
+import Link from "next/link";
+
+interface Notice {
+  _id: string;
+  title: string;
+  date: string;
+  priority: string;
+  content: string;
+}
 
 export default function LatestNotices() {
-  const notices = [
-    {
-      id: 1,
-      title: "SEE Examination Schedule 2024",
-      date: "2024-02-15",
-      priority: "High",
-      content:
-        "SEE examination schedule has been released. Students are advised to check their exam centers and timings.",
-    },
-    {
-      id: 2,
-      title: "Parent-Teacher Meeting",
-      date: "2024-02-10",
-      priority: "Medium",
-      content:
-        "Quarterly parent-teacher meeting scheduled for February 20th. All parents are requested to attend.",
-    },
-    {
-      id: 3,
-      title: "School Sports Day",
-      date: "2024-02-05",
-      priority: "Medium",
-      content:
-        "Annual sports day celebration on February 25th. Students should prepare for various competitions.",
-    },
-  ];
+  const [notices, setNotices] = useState<Notice[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNotices = async () => {
+      try {
+        const res = await axios.get(apiConfig.endpoints.notices);
+        // Sort by date descending and take the latest 3
+        const latestNotices = res.data
+          .sort(
+            (a: Notice, b: Notice) =>
+              new Date(b.date).getTime() - new Date(a.date).getTime()
+          )
+          .slice(0, 3);
+        setNotices(latestNotices);
+      } catch (err) {
+        console.error("Failed to fetch notices:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotices();
+  }, []);
+
+  if (loading)
+    return (
+      <p className="text-center mt-20 text-gray-700 text-xl">
+        Loading latest notices...
+      </p>
+    );
+
+  if (notices.length === 0)
+    return (
+      <p className="text-center mt-20 text-gray-700 text-xl">
+        No notices available.
+      </p>
+    );
 
   return (
     <section className="py-20 bg-gray-50 relative">
@@ -54,7 +78,7 @@ export default function LatestNotices() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {notices.map((notice, index) => (
             <motion.div
-              key={notice.id}
+              key={notice._id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: index * 0.1 }}
@@ -97,10 +121,12 @@ export default function LatestNotices() {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-            View All Notices
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
+          <Link href={"/notices"}>
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+              View All Notices
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </Link>
         </motion.div>
       </div>
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent z-10"></div>

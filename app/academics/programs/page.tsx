@@ -21,7 +21,7 @@ const academicPrograms = [
     grades: "Nursery - UKG",
     ageGroup: "3-5 years",
     description:
-      "Foundation program focusing on play-based learning, creativity, and social skills development through interactive activities and structured play.",
+      "A nurturing foundation program that emphasizes play, creativity, and curiosity. Children develop early literacy, numeracy, and social skills through interactive activities.",
     subjects: [
       "Play-based Learning",
       "Basic Literacy",
@@ -31,14 +31,13 @@ const academicPrograms = [
       "Social Skills",
     ],
     color: "blue",
-    capacity: 30,
-    enrolled: 28,
-    fees: "NPR 5,000/month",
+    capacity: 40,
+    enrolled: 36,
     features: [
-      "Small Class Size",
-      "Qualified Teachers",
-      "Safe Environment",
-      "Parent Engagement",
+      "Safe and Caring Environment",
+      "Experienced Kindergarten Teachers",
+      "Interactive Learning Materials",
+      "Parental Involvement Programs",
     ],
   },
   {
@@ -46,7 +45,7 @@ const academicPrograms = [
     grades: "Grade 1-5",
     ageGroup: "6-10 years",
     description:
-      "Comprehensive primary education building strong foundations in core subjects with emphasis on critical thinking and creativity.",
+      "Focuses on building a strong foundation in core academic subjects while encouraging creativity, curiosity, and confidence through modern teaching methods.",
     subjects: [
       "English",
       "Nepali",
@@ -54,18 +53,17 @@ const academicPrograms = [
       "Science",
       "Social Studies",
       "Computer",
-      "Art",
+      "Arts",
       "Physical Education",
     ],
     color: "green",
-    capacity: 150,
-    enrolled: 142,
-    fees: "NPR 6,000/month",
+    capacity: 200,
+    enrolled: 182,
     features: [
-      "Interactive Learning",
-      "Digital Resources",
-      "Regular Assessment",
-      "Extracurricular Activities",
+      "Interactive Smart Classes",
+      "Regular Assessments",
+      "Sports & Extracurricular Activities",
+      "Student-Centered Learning",
     ],
   },
   {
@@ -73,7 +71,7 @@ const academicPrograms = [
     grades: "Grade 6-8",
     ageGroup: "11-13 years",
     description:
-      "Intermediate level education preparing students for higher secondary challenges with advanced curriculum and skill development.",
+      "Prepares students with advanced curriculum, critical thinking, and project-based learning. Encourages creativity, problem-solving, and teamwork.",
     subjects: [
       "English",
       "Nepali",
@@ -85,14 +83,13 @@ const academicPrograms = [
       "Health Education",
     ],
     color: "purple",
-    capacity: 120,
-    enrolled: 115,
-    fees: "NPR 7,000/month",
+    capacity: 150,
+    enrolled: 138,
     features: [
-      "Advanced Curriculum",
-      "Laboratory Work",
+      "Practical Lab Work",
       "Project-Based Learning",
-      "Career Guidance",
+      "Leadership Opportunities",
+      "Career Counseling Sessions",
     ],
   },
   {
@@ -100,7 +97,7 @@ const academicPrograms = [
     grades: "Grade 9-10",
     ageGroup: "14-16 years",
     description:
-      "SEE preparation program with comprehensive curriculum and exam-focused approach to ensure excellent results.",
+      "A comprehensive SEE preparation program with a focus on academic excellence, mock exams, and individual mentoring to ensure strong results.",
     subjects: [
       "English",
       "Nepali",
@@ -110,17 +107,16 @@ const academicPrograms = [
       "Computer",
       "Optional Math",
       "Account",
-      "Health",
+      "Health Education",
     ],
     color: "orange",
-    capacity: 80,
-    enrolled: 75,
-    fees: "NPR 8,000/month",
+    capacity: 100,
+    enrolled: 92,
     features: [
-      "SEE Preparation",
-      "Mock Exams",
-      "Individual Attention",
-      "College Counseling",
+      "SEE Focused Curriculum",
+      "Frequent Mock Exams",
+      "Individual Mentorship",
+      "Career Guidance for +2",
     ],
   },
 ];
@@ -158,7 +154,7 @@ export default function ProgramsOverviewPage() {
       {/* Hero Section */}
       <motion.section
         variants={itemVariants}
-        className="bg-gradient-to-br from-blue-600 to-purple-700 text-white py-20 relative"
+        className="bg-gradient-to-br from-blue-50 to-indigo-100 py-20"
       >
         <div className="container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto">
@@ -168,7 +164,7 @@ export default function ProgramsOverviewPage() {
                 Programs
               </span>
             </h1>
-            <p className="text-xl text-blue-100 leading-relaxed">
+            <p className="text-xl text-gray-600 leading-relaxed">
               Comprehensive educational programs designed to nurture
               intellectual growth, critical thinking, and character development
               from early childhood through Grade 10.
@@ -203,19 +199,8 @@ export default function ProgramsOverviewPage() {
               <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <Users className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-2">360+</h3>
+              <h3 className="text-3xl font-bold text-gray-900 mb-2">450+</h3>
               <p className="text-gray-600">Students Enrolled</p>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ y: -5, scale: 1.05 }}
-              className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300"
-            >
-              <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <Award className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-2">100%</h3>
-              <p className="text-gray-600">SEE Pass Rate</p>
             </motion.div>
 
             <motion.div
@@ -225,7 +210,7 @@ export default function ProgramsOverviewPage() {
               <div className="w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <Target className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-2">1:15</h3>
+              <h3 className="text-3xl font-bold text-gray-900 mb-2">1:18</h3>
               <p className="text-gray-600">Teacher-Student Ratio</p>
             </motion.div>
           </div>
@@ -287,7 +272,7 @@ export default function ProgramsOverviewPage() {
                     </p>
 
                     {/* Program Stats */}
-                    <div className="grid grid-cols-3 gap-4 mb-6">
+                    <div className="grid grid-cols-2 gap-4 mb-6">
                       <div className="text-center bg-gray-50 rounded-lg p-3 shadow-sm">
                         <div className="text-lg font-bold text-gray-900">
                           {program.enrolled}
@@ -299,12 +284,6 @@ export default function ProgramsOverviewPage() {
                           {program.capacity}
                         </div>
                         <div className="text-xs text-gray-600">Capacity</div>
-                      </div>
-                      <div className="text-center bg-gray-50 rounded-lg p-3 shadow-sm">
-                        <div className="text-lg font-bold text-green-600">
-                          {program.fees}
-                        </div>
-                        <div className="text-xs text-gray-600">Monthly Fee</div>
                       </div>
                     </div>
 
@@ -359,187 +338,6 @@ export default function ProgramsOverviewPage() {
           </div>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-      </motion.section>
-
-      {/* Academic Calendar */}
-      <motion.section
-        variants={itemVariants}
-        className="py-20 bg-white relative"
-      >
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-poppins">
-              Academic Calendar
-            </h2>
-            <p className="text-xl text-gray-600">
-              Important dates and academic schedule
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            <Card className="border-0 shadow-xl hover:shadow-2xl transition-shadow duration-300">
-              <CardContent className="p-8">
-                <div className="flex items-center mb-6">
-                  <Calendar className="w-8 h-8 text-blue-600 mr-4" />
-                  <h3 className="text-2xl font-bold text-gray-900">
-                    Academic Year 2081
-                  </h3>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center py-3 px-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <span className="text-gray-600 font-medium">
-                      Session Starts
-                    </span>
-                    <span className="font-semibold text-blue-600">
-                      Baisakh 1, 2081
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center py-3 px-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <span className="text-gray-600 font-medium">
-                      First Terminal Exam
-                    </span>
-                    <span className="font-semibold text-green-600">
-                      Ashar 15-30, 2081
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center py-3 px-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <span className="text-gray-600 font-medium">
-                      Second Terminal Exam
-                    </span>
-                    <span className="font-semibold text-purple-600">
-                      Kartik 15-30, 2081
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center py-3 px-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <span className="text-gray-600 font-medium">
-                      Final Exam
-                    </span>
-                    <span className="font-semibold text-orange-600">
-                      Falgun 1-15, 2081
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center py-3 px-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <span className="text-gray-600 font-medium">
-                      Session Ends
-                    </span>
-                    <span className="font-semibold text-red-600">
-                      Chaitra 30, 2081
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-xl hover:shadow-2xl transition-shadow duration-300">
-              <CardContent className="p-8">
-                <div className="flex items-center mb-6">
-                  <Clock className="w-8 h-8 text-green-600 mr-4" />
-                  <h3 className="text-2xl font-bold text-gray-900">
-                    Daily Schedule
-                  </h3>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center py-3 px-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <span className="text-gray-600 font-medium">
-                      School Starts
-                    </span>
-                    <span className="font-semibold text-blue-600">9:00 AM</span>
-                  </div>
-                  <div className="flex justify-between items-center py-3 px-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <span className="text-gray-600 font-medium">
-                      Morning Assembly
-                    </span>
-                    <span className="font-semibold text-green-600">
-                      9:00 - 9:15 AM
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center py-3 px-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <span className="text-gray-600 font-medium">Classes</span>
-                    <span className="font-semibold text-purple-600">
-                      9:15 AM - 3:30 PM
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center py-3 px-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <span className="text-gray-600 font-medium">
-                      Lunch Break
-                    </span>
-                    <span className="font-semibold text-orange-600">
-                      12:00 - 1:00 PM
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center py-3 px-4 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <span className="text-gray-600 font-medium">
-                      School Ends
-                    </span>
-                    <span className="font-semibold text-red-600">3:30 PM</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-      </motion.section>
-
-      {/* Quick Links */}
-      <motion.section variants={itemVariants} className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-poppins">
-              Explore More
-            </h2>
-            <p className="text-xl text-gray-600">
-              Discover our academic offerings and achievements
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Link href="/see-results">
-              <motion.div
-                whileHover={{ y: -10, scale: 1.05 }}
-                className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-xl text-center shadow-lg hover:shadow-2xl transition-all duration-300"
-              >
-                <Trophy className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-                <h3 className="text-lg font-bold text-gray-900 mb-2">
-                  SEE Results
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  View our outstanding examination results
-                </p>
-              </motion.div>
-            </Link>
-
-            <Link href="/academics/facilities">
-              <motion.div
-                whileHover={{ y: -10, scale: 1.05 }}
-                className="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-xl text-center shadow-lg hover:shadow-2xl transition-all duration-300"
-              >
-                <BookOpen className="w-12 h-12 text-green-600 mx-auto mb-4" />
-                <h3 className="text-lg font-bold text-gray-900 mb-2">
-                  Academic Facilities
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  Explore our modern learning facilities
-                </p>
-              </motion.div>
-            </Link>
-
-            <Link href="/contact">
-              <motion.div
-                whileHover={{ y: -10, scale: 1.05 }}
-                className="bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-xl text-center shadow-lg hover:shadow-2xl transition-all duration-300"
-              >
-                <Users className="w-12 h-12 text-purple-600 mx-auto mb-4" />
-                <h3 className="text-lg font-bold text-gray-900 mb-2">
-                  Admissions
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  Apply for admission to our programs
-                </p>
-              </motion.div>
-            </Link>
-          </div>
-        </div>
       </motion.section>
     </motion.div>
   );

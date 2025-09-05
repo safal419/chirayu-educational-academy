@@ -20,7 +20,6 @@ export default function Footer() {
       links: [
         { name: "Our History", href: "/about/history" },
         { name: "Mission & Vision", href: "/about/mission" },
-        { name: "Leadership Team", href: "/about/leadership" },
         { name: "Principal's Message", href: "/about/principal" },
         { name: "Facilities", href: "/about/facilities" },
       ],
@@ -29,16 +28,15 @@ export default function Footer() {
       section: "Academics",
       links: [
         { name: "Programs Overview", href: "/academics/programs" },
-        { name: "Academic Facilities", href: "/academics/facilities" },
         { name: "SEE Results", href: "/see-results" },
       ],
     },
     {
       section: "Community",
       links: [
-        { name: "Alumni", href: "/alumni" },
+        { name: "Alumni", href: "#" },
         { name: "Gallery", href: "/gallery" },
-        { name: "Blog", href: "/blog" },
+        { name: "Blog", href: "#" },
       ],
     },
     {

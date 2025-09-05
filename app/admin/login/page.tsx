@@ -7,32 +7,52 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Eye, EyeOff, Lock, User, GraduationCap } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Lock,
+  User,
+  GraduationCap,
+  AlertCircle,
+} from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [credentials, setCredentials] = useState({
-    username: "",
+    email: "",
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
 
-    // Demo credentials
+    // Hardcoded admin credentials
+    const HARD_CODED_EMAIL = "admin@chirayu.edu";
+    const HARD_CODED_PASSWORD = "admin123";
+
     if (
-      credentials.username === "admin" &&
-      credentials.password === "admin123"
+      credentials.email === HARD_CODED_EMAIL &&
+      credentials.password === HARD_CODED_PASSWORD
     ) {
-      localStorage.setItem("adminAuth", "true");
-      setTimeout(() => {
-        window.location.replace("/admin");
-      }, 1000);
+      try {
+        localStorage.setItem("adminAuth", "true");
+        toast.success("Welcome, Admin!");
+        setIsLoading(false);
+        router.replace("/admin");
+      } catch (err: any) {
+        setError("Unable to save login state. Please check browser settings.");
+        toast.error("Login state not saved. Enable storage and retry.");
+        setIsLoading(false);
+      }
     } else {
-      alert("Invalid credentials. Use admin/admin123");
+      setError("Invalid email or password");
+      toast.error("Invalid email or password");
       setIsLoading(false);
     }
   };
@@ -62,23 +82,30 @@ export default function AdminLogin() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-6">
+              {error && (
+                <div className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                  <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                  <span className="text-sm">{error}</span>
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Username
+                  Email
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <input
-                    type="text"
-                    value={credentials.username}
+                    type="email"
+                    value={credentials.email}
                     onChange={(e) =>
                       setCredentials({
                         ...credentials,
-                        username: e.target.value,
+                        email: e.target.value,
                       })
                     }
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                    placeholder="Enter username"
+                    placeholder="Enter email address"
                     required
                   />
                 </div>
@@ -127,11 +154,13 @@ export default function AdminLogin() {
             </form>
 
             <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-blue-800 font-medium">
-                Demo Credentials:
+              <p className="text-sm text-blue-800 font-medium">Secure Login:</p>
+              <p className="text-sm text-blue-600">
+                Use your registered email and password
               </p>
-              <p className="text-sm text-blue-600">Username: admin</p>
-              <p className="text-sm text-blue-600">Password: admin123</p>
+              <p className="text-sm text-blue-600">
+                Contact administrator for access
+              </p>
             </div>
           </CardContent>
         </Card>

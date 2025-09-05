@@ -38,7 +38,6 @@ const menuItems = [
     children: [
       { title: "Notices", href: "/admin/notices", icon: Bell },
       { title: "Events", href: "/admin/events", icon: Calendar },
-      { title: "Blog", href: "/admin/blog", icon: BookOpen },
       { title: "Gallery", href: "/admin/gallery", icon: ImageIcon },
     ],
   },
@@ -47,22 +46,7 @@ const menuItems = [
     icon: GraduationCap,
     children: [
       { title: "SEE Results", href: "/admin/see-results", icon: Trophy },
-      { title: "Programs", href: "/admin/programs", icon: BookOpen },
-      { title: "Facilities", href: "/admin/facilities", icon: Settings },
     ],
-  },
-  {
-    title: "Communication",
-    icon: MessageSquare,
-    children: [
-      { title: "Messages", href: "/admin/messages", icon: MessageSquare },
-      { title: "Testimonials", href: "/admin/testimonials", icon: FileText },
-    ],
-  },
-  {
-    title: "Settings",
-    href: "/admin/settings",
-    icon: Settings,
   },
 ];
 
@@ -121,7 +105,9 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
               </div>
               <div>
                 <h2 className="text-lg font-bold text-gray-900">Admin Panel</h2>
-                <p className="text-xs text-gray-500">Chirayu Academy</p>
+                <p className="text-xs text-gray-500">
+                  Chirayu Educational Academy
+                </p>
               </div>
             </div>
             <Button
@@ -209,17 +195,6 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
           </nav>
 
           {/* Footer */}
-          <div className="p-4 border-t border-gray-200">
-            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg shadow-sm">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-xs font-bold text-white">A</span>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-900">Admin User</p>
-                <p className="text-xs text-gray-500">Administrator</p>
-              </div>
-            </div>
-          </div>
         </div>
       </motion.aside>
     </>

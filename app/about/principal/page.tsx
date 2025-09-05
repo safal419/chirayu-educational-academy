@@ -83,7 +83,7 @@ export default function PrincipalPage() {
               </p>
 
               <div className="space-y-4 mb-8">
-                <div className="flex items-center text-gray-600">
+                {/* <div className="flex items-center text-gray-600">
                   <Award className="w-5 h-5 mr-3 text-blue-600" />
                   <span>
                     Ph.D. in Educational Leadership, Tribhuvan University
@@ -92,7 +92,7 @@ export default function PrincipalPage() {
                 <div className="flex items-center text-gray-600">
                   <BookOpen className="w-5 h-5 mr-3 text-green-600" />
                   <span>M.Ed. in Educational Administration</span>
-                </div>
+                </div> */}
                 <div className="flex items-center text-gray-600">
                   <Users className="w-5 h-5 mr-3 text-purple-600" />
                   <span>30+ Years in Educational Leadership</span>
