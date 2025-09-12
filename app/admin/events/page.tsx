@@ -104,17 +104,14 @@ export default function EventsPage() {
   };
 
   const handleCreate = async (payload: any) => {
-    console.log("[EventsPage.handleCreate] got payload:", payload);
     try {
       let imageUrl = payload.image || "";
       if (payload.image instanceof File) {
-        console.log("[EventsPage.handleCreate] uploading file...");
         const formData = new FormData();
         formData.append("files", payload.image);
         const res = await axios.post(uploadEndpoint, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-        console.log("[EventsPage.handleCreate] upload res:", res.data);
         imageUrl =
           (Array.isArray(res.data) && res.data[0]?.url) ||
           res.data.url ||
@@ -123,13 +120,8 @@ export default function EventsPage() {
       }
       const eventData = { ...payload, image: imageUrl };
       eventData.attendees = Math.max(0, Number(eventData.attendees) || 0);
-      console.log(
-        "[EventsPage.handleCreate] posting eventData:",
-        endpoint,
-        eventData
-      );
+
       const createRes = await axios.post(endpoint, eventData);
-      console.log("[EventsPage.handleCreate] createRes:", createRes.data);
       setEvents((prev) => [createRes.data, ...prev]);
       toast.success("Event created");
     } catch (err) {

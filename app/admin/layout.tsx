@@ -24,7 +24,6 @@ export default function AdminLayout({
       try {
         // Check if we're on the client side
         if (typeof window === "undefined") {
-          console.log("Server side, skipping auth check");
           return;
         }
 
@@ -33,12 +32,10 @@ export default function AdminLayout({
         if (adminAuth === "true") {
           setIsAuthenticated(true);
           setRefreshKey((prev) => prev + 1);
-          console.log("Auth check - adminAuth: true, pathname:", pathname);
           setIsLoading(false);
           setHasCheckedAuth(true);
           return;
         } else {
-          console.log("Auth check - adminAuth: false, pathname:", pathname);
           if (pathname !== "/admin/login" && hasCheckedAuth) {
             router.push("/admin/login");
           }
@@ -69,7 +66,7 @@ export default function AdminLayout({
     // Listen for storage changes (when data is updated from another tab)
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "adminAuth") {
-        console.log("adminAuth changed, rechecking auth");
+        ("adminAuth changed, rechecking auth");
         checkAuth();
       }
     };
@@ -101,20 +98,9 @@ export default function AdminLayout({
     );
   }
 
-  // Debug: Show current state
-  console.log("Rendering admin layout:", {
-    isAuthenticated,
-    pathname,
-    isLoading,
-    hasCheckedAuth,
-  });
-
-  // User-based auth removed in hardcoded mode
-
   if (!isAuthenticated && hasCheckedAuth) {
     // No user role checks in hardcoded auth mode
 
-    console.log("Not authenticated and checked auth, should redirect");
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
         <div className="text-center">

@@ -28,10 +28,7 @@ export const setAuthData = (authData: AuthResponse) => {
       // Also set the old adminAuth flag for compatibility
       localStorage.setItem('adminAuth', 'true');
       
-      console.log("Auth data stored successfully:", {
-        token: authData.access_token.substring(0, 20) + "...",
-        user: authData.user
-      });
+    
     } catch (error) {
       console.error("Failed to store auth data:", error);
     }
