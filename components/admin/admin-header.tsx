@@ -38,7 +38,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
     toast.success("Logged out successfully");
 
     // Redirect to login
-    window.location.replace("/admin/login");
+    window.location.replace("/");
   };
 
   const goToMainSite = () => {

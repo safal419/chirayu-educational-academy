@@ -1,13 +1,13 @@
 export const siteConfig = {
   name: "Chirayu Educational Academy",
-  description: "Excellence in Education - Nurturing Future Leaders",
-  url: "https://chirayuacademy.edu.np",
-  established: "2055 B.S.",
+  description: "Education for Eternity",
+  url: "https://chirayueducationalacademy.edu.np",
+  established: "2062 B.S.",
   grades: "Nursery to Grade 10",
   contact: {
     phone: "+977-9851060977",
-    email: "info@chirayuacademy.edu.np",
-    address: "Sankharapur Municipality, Indrayani-4",
+    email: "info@chirayueducationalacademy.edu.np",
+    address: "Sankharapur Municipality, Indrayani-9",
   },
   social: {
     facebook: "https://facebook.com/chirayuacademy",
@@ -22,13 +22,15 @@ export const siteConfig = {
 }
 
 export const apiConfig = {
-  baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3030",
+  baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   endpoints: {
     events: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/events` : "http://localhost:3030/events",
     gallery: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/gallery` : "http://localhost:3030/gallery",
     notices: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/notices` : "http://localhost:3030/notices",
     results: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/results` : "http://localhost:3030/results",
-    upload: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/upload` : "http://localhost:3030/upload",
+    upload: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/files/upload` : "http://localhost:3030/upload",
+    articles: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/articles` : "http://localhost:3030/articles",
+    alumni: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/alumni` : "http://localhost:3030/alumni",
     auth: {
       login: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth` : "http://localhost:3030/auth",
       profile: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/profile` : "http://localhost:3030/auth/profile",

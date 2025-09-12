@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Clock, Bell } from "lucide-react";
 import axios from "axios";
+import Loading from "@/components/Loading";
+import EmptyState from "@/components/EmptyState";
 import { apiConfig } from "@/lib/config";
 
 const containerVariants = {
@@ -63,8 +65,19 @@ export default function NoticesPage() {
     }
   };
 
-  if (loading) return <p className="text-center mt-20">Loading notices...</p>;
+  if (loading)
+    return (
+      <Loading mode="skeleton" count={3} message="Loading latest notices..." />
+    );
 
+  if (!notices.length)
+    return (
+      <EmptyState
+        title="No notices"
+        message="No notices are available right now."
+        action={{ label: "Refresh", onClick: () => window.location.reload() }}
+      />
+    );
   return (
     <motion.div
       className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12"

@@ -6,6 +6,8 @@ import { Calendar, MapPin, Clock, Users, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import axios from "axios";
 import { apiConfig } from "@/lib/config";
+import Loading from "@/components/Loading";
+import EmptyState from "@/components/EmptyState";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -56,7 +58,17 @@ export default function EventsPage() {
     }
   };
 
-  if (loading) return <p className="text-center mt-20">Loading events...</p>;
+  if (loading)
+    return <Loading mode="skeleton" count={2} message="Loading events..." />;
+
+  if (upcomingEvents.length === 0)
+    return (
+      <EmptyState
+        title="No upcoming events"
+        message="There are no upcoming events at the moment."
+        action={{ label: "Refresh", onClick: () => window.location.reload() }}
+      />
+    );
 
   const placeholderImage = "/event-placeholder.jpg";
 

@@ -10,6 +10,8 @@ import Captions from "yet-another-react-lightbox/plugins/captions";
 import axios from "axios";
 import { apiConfig } from "@/lib/config";
 import Link from "next/link";
+import Loading from "@/components/Loading";
+import EmptyState from "@/components/EmptyState";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -60,14 +62,15 @@ export default function PhotoGallery() {
   };
 
   if (loading)
-    return (
-      <p className="text-center mt-20 text-gray-700">Loading gallery...</p>
-    );
+    return <Loading mode="skeleton" count={6} message="Loading gallery..." />;
+
   if (!galleryData.length)
     return (
-      <p className="text-center mt-20 text-gray-700 text-xl">
-        No photos available.
-      </p>
+      <EmptyState
+        title="No photos available"
+        message="There are no photos in the gallery yet."
+        action={{ label: "Refresh", onClick: () => window.location.reload() }}
+      />
     );
 
   const placeholderImage = "/placeholder.svg";

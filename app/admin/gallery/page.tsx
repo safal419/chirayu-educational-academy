@@ -237,6 +237,18 @@ function CreateAlbumModal({
     editingItem?.src || []
   );
 
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(false);
+
+  // generate/cleanup previews when files change
+  useEffect(() => {
+    const urls = files.map((f) => URL.createObjectURL(f));
+    setPreviewUrls(urls);
+    return () => {
+      urls.forEach((u) => URL.revokeObjectURL(u));
+    };
+  }, [files]);
+
   // Handle new file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -253,6 +265,68 @@ function CreateAlbumModal({
     setExistingImages((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const extractUploadPaths = (data: any): string[] => {
+    if (!data) return [];
+
+    // direct arrays of urls
+    if (Array.isArray(data.urls) && data.urls.length) {
+      return data.urls.filter(Boolean);
+    }
+
+    // common "paths" array
+    if (Array.isArray(data.paths) && data.paths.length) {
+      return data.paths.filter(Boolean);
+    }
+
+    // Cloudinary-like response: { publicIds: [...], urls: [...] }
+    if (
+      Array.isArray(data.publicIds) &&
+      Array.isArray(data.urls) &&
+      data.urls.length
+    ) {
+      return data.urls.filter(Boolean);
+    }
+
+    // server may return an array of resource objects
+    if (Array.isArray(data) && data.length) {
+      return data
+        .map(
+          (r: any) =>
+            r.secure_url ||
+            r.url ||
+            r.path ||
+            (Array.isArray(r) ? r[0] : undefined)
+        )
+        .filter(Boolean);
+    }
+
+    // files / uploads arrays with resource objects
+    if (Array.isArray(data.files) && data.files.length) {
+      return data.files
+        .map((f: any) => f.secure_url || f.url || f.path)
+        .filter(Boolean);
+    }
+    if (Array.isArray(data.uploads) && data.uploads.length) {
+      return data.uploads
+        .map((u: any) => u.secure_url || u.url || u.path)
+        .filter(Boolean);
+    }
+
+    // nested common shape: { data: [...] }
+    if (Array.isArray(data.data) && data.data.length) {
+      return data.data
+        .map((r: any) => r.secure_url || r.url || r.path)
+        .filter(Boolean);
+    }
+
+    // single-object responses
+    if (typeof data.secure_url === "string") return [data.secure_url];
+    if (typeof data.url === "string") return [data.url];
+    if (typeof data.path === "string") return [data.path];
+
+    return [];
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -262,17 +336,79 @@ function CreateAlbumModal({
     }
 
     try {
+      setUploading(true);
+
       let uploadedUrls: string[] = [...existingImages];
 
       if (files.length > 0) {
-        const formData = new FormData();
-        files.forEach((file) => formData.append("files", file));
+        // try multiple common field names one-by-one to avoid "Unexpected field" from multer-like handlers
+        const candidateFields = [
+          "files",
+          "images",
+          "file",
+          "files[]",
+          "images[]",
+        ];
 
-        const res = await axios.post(apiConfig.endpoints.upload, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        const tryUploadWithField = async (fieldName: string) => {
+          const fd = new FormData();
+          files.forEach((f) => fd.append(fieldName, f));
+          return axios.post(apiConfig.endpoints.upload, fd, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+        };
 
-        uploadedUrls = [...uploadedUrls, ...res.data.paths];
+        let uploadResponse: any = null;
+        let lastError: any = null;
+        for (const field of candidateFields) {
+          try {
+            const res = await tryUploadWithField(field);
+            uploadResponse = res;
+            break;
+          } catch (err: any) {
+            lastError = err;
+            const msg =
+              err?.response?.data?.message ||
+              err?.response?.data?.error ||
+              (err?.response?.data && JSON.stringify(err.response.data)) ||
+              err.message;
+            // if server explicitly complains about unexpected field, try next candidate
+            if (
+              typeof msg === "string" &&
+              msg.toLowerCase().includes("unexpected field")
+            ) {
+              continue;
+            }
+            // other errors - stop and throw
+            throw err;
+          }
+        }
+
+        if (!uploadResponse) {
+          console.error(
+            "Upload failed for all candidate field names:",
+            lastError
+          );
+          throw lastError;
+        }
+
+        const newPaths = extractUploadPaths(uploadResponse.data);
+        uploadedUrls = [...uploadedUrls, ...newPaths];
+      }
+
+      // ensure unique urls and preserve order
+      const uniqueUrls = Array.from(new Set(uploadedUrls)).filter(Boolean);
+
+      if (!uniqueUrls.length) {
+        console.error(
+          "Upload succeeded but no URLs returned from upload service:",
+          uploadedUrls
+        );
+        toast.error(
+          "Upload succeeded but no image URLs were returned. Please try again."
+        );
+        setUploading(false);
+        return;
       }
 
       const payload = {
@@ -280,7 +416,7 @@ function CreateAlbumModal({
         description,
         category,
         date: new Date(date),
-        src: uploadedUrls,
+        src: uniqueUrls,
       };
 
       if (editingItem?._id) {
@@ -295,7 +431,10 @@ function CreateAlbumModal({
       onClose();
       onSave();
     } catch (err) {
-      console.error(err);
+      console.error("Gallery upload error:", err);
+      toast.error("Failed to save album");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -419,16 +558,16 @@ function CreateAlbumModal({
             )}
 
             {/* Preview newly selected files */}
-            {files.length > 0 && (
+            {previewUrls.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-2">
-                {files.map((file, i) => (
+                {previewUrls.map((url, i) => (
                   <div
                     key={i}
                     className="relative w-24 h-24 rounded overflow-hidden border"
                   >
                     <img
-                      src={URL.createObjectURL(file)}
-                      alt={file.name}
+                      src={url}
+                      alt={`preview-${i}`}
                       className="w-full h-full object-cover"
                     />
                     <button
@@ -468,11 +607,22 @@ function CreateAlbumModal({
               variant="outline"
               onClick={onClose}
               className="w-full md:w-auto bg-transparent"
+              disabled={uploading}
             >
               Cancel
             </Button>
-            <Button type="submit" className="w-full md:w-auto">
-              {editingItem ? "Update Album" : "Create Album"}
+            <Button
+              type="submit"
+              className="w-full md:w-auto"
+              disabled={uploading}
+            >
+              {uploading
+                ? editingItem
+                  ? "Updating..."
+                  : "Uploading..."
+                : editingItem
+                ? "Update Album"
+                : "Create Album"}
             </Button>
           </div>
         </form>

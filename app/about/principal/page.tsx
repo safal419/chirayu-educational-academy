@@ -148,7 +148,7 @@ export default function PrincipalPage() {
                 </p>
 
                 <p>
-                  Our outstanding SEE results, with a consistent 95% success
+                  Our outstanding SEE results, with a consistent 100% success
                   rate, are a testament to the hard work of our students and the
                   dedication of our teachers. However, we measure our success
                   not just in grades, but in the confident, caring, and capable

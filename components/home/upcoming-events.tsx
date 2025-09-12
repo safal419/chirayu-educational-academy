@@ -7,6 +7,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { apiConfig } from "@/lib/config";
+import Loading from "@/components/Loading";
+import EmptyState from "@/components/EmptyState";
 
 export default function UpcomingEvents() {
   const [events, setEvents] = useState<any[]>([]);
@@ -33,13 +35,15 @@ export default function UpcomingEvents() {
   }, []);
 
   if (loading)
-    return <p className="text-center mt-20 text-gray-700">Loading events...</p>;
+    return <Loading mode="skeleton" count={2} message="Loading events..." />;
 
   if (events.length === 0)
     return (
-      <p className="text-center mt-20 text-gray-700 text-xl">
-        No upcoming events available.
-      </p>
+      <EmptyState
+        title="No upcoming events"
+        message="There are no upcoming events at the moment."
+        action={{ label: "Refresh", onClick: () => window.location.reload() }}
+      />
     );
 
   return (

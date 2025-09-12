@@ -88,9 +88,6 @@ export default function AdminLayout({
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading admin panel...</p>
-          <p className="text-xs text-gray-500 mt-2">
-            Auth: {isAuthenticated ? "Yes" : "No"} | Path: {pathname}
-          </p>
         </div>
       </div>
     );
@@ -173,12 +170,6 @@ export default function AdminLayout({
       {/* Debug components removed for simplified auth */}
 
       {/* Simple debug info */}
-      <div className="fixed bottom-4 right-4 bg-black bg-opacity-75 text-white p-2 rounded text-xs">
-        <div>Auth: {isAuthenticated ? "✓" : "✗"}</div>
-        <div>Path: {pathname}</div>
-        <div>Loading: {isLoading ? "✓" : "✗"}</div>
-        <div>Checked: {hasCheckedAuth ? "✓" : "✗"}</div>
-      </div>
     </div>
   );
 }

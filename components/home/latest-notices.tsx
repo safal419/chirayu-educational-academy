@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { apiConfig } from "@/lib/config";
 import Link from "next/link";
+import Loading from "@/components/Loading";
+import EmptyState from "@/components/EmptyState";
 
 interface Notice {
   _id: string;
@@ -44,17 +46,15 @@ export default function LatestNotices() {
   }, []);
 
   if (loading)
-    return (
-      <p className="text-center mt-20 text-gray-700 text-xl">
-        Loading latest notices...
-      </p>
-    );
+    return <Loading mode="skeleton" count={3} message="Loading notices..." />;
 
-  if (notices.length === 0)
+  if (!notices.length)
     return (
-      <p className="text-center mt-20 text-gray-700 text-xl">
-        No notices available.
-      </p>
+      <EmptyState
+        title="No notices"
+        message="No notices published yet."
+        action={{ label: "Refresh", onClick: () => window.location.reload() }}
+      />
     );
 
   return (

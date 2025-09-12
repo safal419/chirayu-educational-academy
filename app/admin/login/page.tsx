@@ -33,8 +33,8 @@ export default function AdminLogin() {
     setError("");
 
     // Hardcoded admin credentials
-    const HARD_CODED_EMAIL = "admin@chirayu.edu";
-    const HARD_CODED_PASSWORD = "admin123";
+    const HARD_CODED_EMAIL = "admin@chirayueducational.edu";
+    const HARD_CODED_PASSWORD = "Chirayuacademy@4321";
 
     if (
       credentials.email === HARD_CODED_EMAIL &&

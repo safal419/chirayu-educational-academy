@@ -8,6 +8,8 @@ import axios from "axios";
 import { apiConfig } from "@/lib/config";
 import "react-image-lightbox/style.css";
 import Lightbox from "react-image-lightbox";
+import Loading from "@/components/Loading";
+import EmptyState from "@/components/EmptyState";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -136,17 +138,15 @@ export default function GalleryPage() {
   };
 
   if (loading)
-    return (
-      <p className="text-center mt-20 text-gray-700 text-xl">
-        Loading gallery...
-      </p>
-    );
+    return <Loading mode="skeleton" count={6} message="Loading gallery..." />;
 
-  if (filteredPhotos.length === 0)
+  if (!galleryData.length)
     return (
-      <p className="text-center mt-20 text-gray-700 text-xl">
-        No photos available in this category.
-      </p>
+      <EmptyState
+        title="No gallery items"
+        message="Gallery is empty right now."
+        action={{ label: "Refresh", onClick: () => window.location.reload() }}
+      />
     );
 
   return (

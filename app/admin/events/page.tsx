@@ -7,6 +7,28 @@ import { Plus, Edit, Trash2, Eye, Calendar, MapPin, Clock } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { apiConfig } from "@/lib/config";
+import CreateEventModal from "./CreateEventModal";
+import EditEventModal from "./EditEventModal";
+
+function extractImageUrl(data: any): string {
+  if (!data) return "";
+
+  if (Array.isArray(data?.urls) && data.urls[0]) return data.urls[0];
+
+  if (Array.isArray(data) && data[0])
+    return data[0].secure_url || data[0].url || data[0].path || "";
+  if (data?.files && data.files[0])
+    return (
+      data.files[0].secure_url || data.files[0].url || data.files[0].path || ""
+    );
+  if (data?.paths && data.paths[0]) return data.paths[0];
+  if (data?.secure_url) return data.secure_url;
+  if (data?.url) return data.url;
+  if (data?.path) return data.path;
+  if (typeof data === "string") return data;
+
+  return "";
+}
 
 interface Event {
   _id?: string;
@@ -20,25 +42,139 @@ interface Event {
   image: string;
 }
 
+const inFlight = new Map<string, Promise<any>>();
+
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [viewingEvent, setViewingEvent] = useState<Event | null>(null);
+  const endpoint = apiConfig.endpoints.events;
+  const uploadEndpoint = apiConfig.endpoints.upload;
 
   useEffect(() => {
     fetchEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchEvents = async () => {
-    const res = await axios.get(apiConfig.endpoints.events);
-    setEvents(res.data);
+    const key = endpoint;
+    if (inFlight.has(key)) {
+      try {
+        const data = await inFlight.get(key);
+        setEvents(Array.isArray(data) ? data : []);
+        return;
+      } catch {
+        // fallthrough to fresh attempt
+      }
+    }
+
+    const p = axios
+      .get(endpoint)
+      .then((res) => res.data)
+      .then((data) => {
+        setEvents(Array.isArray(data) ? data : []);
+        return data;
+      })
+      .catch((err) => {
+        console.error("Failed to fetch events:", err);
+        toast.error("Failed to load events");
+        setEvents([]);
+        throw err;
+      })
+      .finally(() => {
+        inFlight.delete(key);
+      });
+
+    inFlight.set(key, p);
+    await p;
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this event?")) {
-      await axios.delete(`${apiConfig.endpoints.events}/${id}`);
-      fetchEvents();
+    if (!confirm("Are you sure you want to delete this event?")) return;
+    try {
+      await axios.delete(`${endpoint}/${id}`);
+      toast.success("Event deleted");
+      // local remove for instant UI response
+      setEvents((prev) => prev.filter((e) => e._id !== id));
+    } catch (err) {
+      console.error("Delete failed:", err);
+      toast.error("Failed to delete event");
+    }
+  };
+
+  const handleCreate = async (payload: any) => {
+    console.log("[EventsPage.handleCreate] got payload:", payload);
+    try {
+      let imageUrl = payload.image || "";
+      if (payload.image instanceof File) {
+        console.log("[EventsPage.handleCreate] uploading file...");
+        const formData = new FormData();
+        formData.append("files", payload.image);
+        const res = await axios.post(uploadEndpoint, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        console.log("[EventsPage.handleCreate] upload res:", res.data);
+        imageUrl =
+          (Array.isArray(res.data) && res.data[0]?.url) ||
+          res.data.url ||
+          res.data.path ||
+          "";
+      }
+      const eventData = { ...payload, image: imageUrl };
+      eventData.attendees = Math.max(0, Number(eventData.attendees) || 0);
+      console.log(
+        "[EventsPage.handleCreate] posting eventData:",
+        endpoint,
+        eventData
+      );
+      const createRes = await axios.post(endpoint, eventData);
+      console.log("[EventsPage.handleCreate] createRes:", createRes.data);
+      setEvents((prev) => [createRes.data, ...prev]);
+      toast.success("Event created");
+    } catch (err) {
+      console.error("Save event error:", err);
+      toast.error("Error saving event");
+      throw err;
+    }
+  };
+
+  const uploadFile = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("files", file);
+
+    const res = await axios.post(apiConfig.endpoints.upload, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    return extractImageUrl(res.data);
+  };
+
+  // Update handler: if payload.image is File -> upload first, then patch
+  const handleUpdate = async (payload: any) => {
+    try {
+      let imageUrl = payload.image || "";
+
+      if (payload.image instanceof File) {
+        imageUrl = await uploadFile(payload.image);
+      } else if (payload.image === null) {
+        imageUrl = ""; // removed
+      }
+
+      const eventData = {
+        ...payload,
+        image: imageUrl,
+        attendees: Math.max(0, Number(payload.attendees) || 0),
+      };
+      const id = payload._id ?? payload.id;
+      if (!id) throw new Error("Missing event id");
+
+      await axios.patch(`${endpoint}/${id}`, eventData);
+      await fetchEvents();
+    } catch (err) {
+      console.error("Update failed:", err);
+      toast.error("Failed to update event");
+      throw err;
     }
   };
 
@@ -225,8 +361,18 @@ export default function EventsPage() {
       {showCreateModal && (
         <CreateEventModal
           event={editingEvent}
-          onClose={() => setShowCreateModal(false)}
-          onSave={fetchEvents}
+          onClose={() => {
+            setShowCreateModal(false);
+            setEditingEvent(null);
+          }}
+          onCreate={async (payload: any) => {
+            await handleCreate(payload);
+            await fetchEvents();
+          }}
+          onUpdate={async (payload: any) => {
+            await handleUpdate(payload);
+            await fetchEvents();
+          }}
         />
       )}
 
@@ -296,250 +442,6 @@ function EventViewModal({
             Close
           </Button>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function CreateEventModal({
-  event,
-  onClose,
-  onSave,
-}: {
-  event: Event | null;
-  onClose: () => void;
-  onSave: () => void;
-}) {
-  const [formData, setFormData] = useState<Event>(
-    event || {
-      title: "",
-      description: "",
-      date: "",
-      time: "",
-      location: "",
-      status: "upcoming",
-      attendees: 0,
-      image: "",
-    }
-  );
-  const [file, setFile] = useState<File | null>(null);
-
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    if (name === "attendees") {
-      const parsed = value === "" ? 0 : Number(value);
-      const safeValue = Number.isNaN(parsed) ? 0 : Math.max(0, parsed);
-      setFormData({ ...formData, attendees: safeValue });
-      return;
-    }
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try {
-      let imageUrl = formData.image;
-
-      // Upload image first
-      if (file) {
-        const formDataUpload = new FormData();
-        formDataUpload.append("files", file);
-
-        const uploadRes = await axios.post(
-          apiConfig.endpoints.upload,
-          formDataUpload,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
-
-        imageUrl = uploadRes.data.paths[0];
-      }
-
-      const eventData = { ...formData, image: imageUrl };
-      eventData.attendees = Math.max(0, Number(eventData.attendees) || 0);
-
-      if (event && event._id) {
-        await axios.patch(
-          `${apiConfig.endpoints.events}/${event._id}`,
-          eventData
-        );
-      } else {
-        await axios.post(apiConfig.endpoints.events, eventData);
-      }
-
-      onSave();
-      onClose();
-    } catch (error) {
-      console.error(error);
-      alert("Error saving event");
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">
-            {event ? "Edit Event" : "Create New Event"}
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
-          >
-            ×
-          </button>
-        </div>
-
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Event Title
-            </label>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-              placeholder="Enter event title"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Description
-            </label>
-            <textarea
-              name="description"
-              rows={4}
-              value={formData.description}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-              placeholder="Enter event description..."
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Date
-              </label>
-              <input
-                type="date"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Time
-              </label>
-              <input
-                type="time"
-                name="time"
-                value={formData.time}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Location
-            </label>
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-              placeholder="Enter event location"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Attendees
-            </label>
-            <input
-              type="number"
-              name="attendees"
-              value={formData.attendees}
-              onChange={handleChange}
-              required
-              min={0}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-              placeholder="Enter number of attendees"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Status
-            </label>
-            <select
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-            >
-              <option value="upcoming">Upcoming</option>
-              <option value="ongoing">Ongoing</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Event Image
-            </label>
-            <input type="file" accept="image/*" onChange={handleFileChange} />
-            {formData.image && !file && (
-              <img
-                src={formData.image}
-                alt="preview"
-                className="mt-2 h-32 rounded object-cover"
-              />
-            )}
-            {file && (
-              <img
-                src={URL.createObjectURL(file)}
-                alt="preview"
-                className="mt-2 h-32 rounded object-cover"
-              />
-            )}
-          </div>
-
-          <div className="flex justify-end space-x-4">
-            <Button variant="outline" onClick={onClose} type="button">
-              Cancel
-            </Button>
-            <Button type="submit">
-              {event ? "Update Event" : "Create Event"}
-            </Button>
-          </div>
-        </form>
       </div>
     </div>
   );

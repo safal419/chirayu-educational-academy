@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { Trophy, TrendingUp, Users, Filter, Calendar } from "lucide-react";
-import { Result, Topper } from "@/types"; // Optional: define types in a separate file
-import { Button } from "@/components/ui/button";
+import { Result } from "@/types";
 import axios from "axios";
 import { apiConfig } from "@/lib/config";
+import Loading from "@/components/Loading";
 
 export default function SEEResultsPage() {
   const [resultsData, setResultsData] = useState<Result[]>([]);
@@ -40,12 +40,39 @@ export default function SEEResultsPage() {
   ];
 
   if (loading)
-    return (
-      <p className="text-center mt-20 text-gray-700">Loading results...</p>
-    );
+    return <Loading mode="skeleton" count={4} message="Loading results..." />;
 
   if (resultsData.length === 0)
-    return <p className="text-center mt-20 text-gray-700">No results found.</p>;
+    return (
+      <div className="flex flex-col items-center justify-center h-[70vh] px-4 text-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-16 h-16 text-gray-400 mb-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={1.5}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"
+          />
+        </svg>
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-700">
+          No Results Found
+        </h2>
+        <p className="mt-2 text-sm sm:text-base text-gray-500 max-w-md">
+          Try adjusting your search or filter to find what you’re looking for.
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-6 px-5 py-2.5 rounded-xl bg-blue-600 text-white text-sm sm:text-base font-medium shadow hover:bg-blue-700 transition"
+        >
+          Refresh
+        </button>
+      </div>
+    );
 
   return (
     <div className="py-16 bg-gradient-to-br from-blue-50 to-white">

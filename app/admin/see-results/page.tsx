@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
+import imageCompression from "browser-image-compression"; // <--- added
 import { Plus, Edit, Trash2, Eye, X, Save } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -155,9 +156,30 @@ export default function SEEResultsAdmin() {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
-    if (file) {
-      updateTopPerformer(index, "photo", file);
-    }
+    if (!file) return;
+
+    // Compress on selection to keep preview small and reduce upload size
+    const options = {
+      maxSizeMB: 0.8, // target max size in MB
+      maxWidthOrHeight: 1600, // max dimension
+      useWebWorker: true,
+      maxIteration: 10,
+      fileType: file.type,
+    };
+
+    (async () => {
+      try {
+        const compressedFile = await imageCompression(file, options);
+        // compressedFile is a File (or Blob); store it so handleSave can upload
+        updateTopPerformer(index, "photo", compressedFile as File);
+        toast.success("Image compressed");
+      } catch (err) {
+        console.error("Image compression failed", err);
+        // Fallback to original file if compression fails
+        updateTopPerformer(index, "photo", file);
+        toast.error("Image compression failed, original file will be used");
+      }
+    })();
   };
 
   // Save Result
@@ -165,19 +187,31 @@ export default function SEEResultsAdmin() {
     try {
       setIsUploading(true);
 
-      // Upload images first
       const toppersWithPhotos = await Promise.all(
         (formData.toppers || []).map(async (performer) => {
-          if (performer.photo instanceof File) {
+          if (
+            performer.photo instanceof File ||
+            performer.photo instanceof Blob
+          ) {
             try {
               const form = new FormData();
-              form.append("files", performer.photo);
+
+              // Ensure we append a File (not a plain Blob)
+              const uploadFile =
+                performer.photo instanceof File
+                  ? performer.photo
+                  : new File([performer.photo], `photo-${Date.now()}.jpg`, {
+                      type: (performer.photo as Blob).type || "image/jpeg",
+                    });
+
+              form.append("files", uploadFile); // ✅ correct field name
+
               const res = await axios.post(UPLOAD_URL, form, {
                 headers: { "Content-Type": "multipart/form-data" },
               });
 
-              if (res.data && res.data.paths && res.data.paths.length > 0) {
-                return { ...performer, photo: res.data.paths[0] };
+              if (res.data && res.data.url) {
+                return { ...performer, photo: res.data.url }; // ✅ match backend
               } else {
                 console.error("Upload response format unexpected:", res.data);
                 toast.error("Failed to upload image for " + performer.name);

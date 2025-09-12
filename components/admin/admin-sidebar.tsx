@@ -11,10 +11,12 @@ import {
   Trophy,
   MessageSquare,
   Settings,
+  Newspaper,
   ChevronDown,
   ChevronRight,
   Bell,
   BookOpen,
+  Users,
   ImageIcon,
   X,
   GraduationCap,
@@ -38,6 +40,7 @@ const menuItems = [
     children: [
       { title: "Notices", href: "/admin/notices", icon: Bell },
       { title: "Events", href: "/admin/events", icon: Calendar },
+      { title: "Blog", href: "/admin/blog", icon: Newspaper },
       { title: "Gallery", href: "/admin/gallery", icon: ImageIcon },
     ],
   },
@@ -46,6 +49,7 @@ const menuItems = [
     icon: GraduationCap,
     children: [
       { title: "SEE Results", href: "/admin/see-results", icon: Trophy },
+      { title: "Alumni", href: "/admin/alumni", icon: Users },
     ],
   },
 ];
