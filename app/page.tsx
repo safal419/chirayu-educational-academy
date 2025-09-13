@@ -11,7 +11,6 @@ import UpcomingEvents from "@/components/home/upcoming-events";
 import NewsUpdates from "@/components/home/news-updates";
 import SEEResults from "@/components/home/see-results";
 import PhotoGallery from "@/components/home/photo-gallery";
-import Testimonials from "@/components/home/testimonials";
 import PopupImage from "@/components/PopupImage";
 
 const containerVariants = {

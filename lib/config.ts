@@ -23,21 +23,22 @@ export const siteConfig = {
 
 export const apiConfig = {
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
-  endpoints: {
-    events: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/events` : "http://localhost:3030/events",
-    gallery: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/gallery` : "http://localhost:3030/gallery",
-    notices: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/notices` : "http://localhost:3030/notices",
-    results: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/results` : "http://localhost:3030/results",
-    upload: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/files/upload` : "http://localhost:3030/upload",
-    articles: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/articles` : "http://localhost:3030/articles",
-    alumni: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/alumni` : "http://localhost:3030/alumni",
-    auth: {
-      login: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth` : "http://localhost:3030/auth",
-      profile: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/profile` : "http://localhost:3030/auth/profile",
-      changePassword: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/change-password` : "http://localhost:3030/auth/change-password",
-    },
-    users: process.env.NEXT_PUBLIC_API_BASE_URL ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/users` : "http://localhost:3030/users",
+   endpoints : {
+  events: `${process.env.NEXT_PUBLIC_API_BASE_URL}/events`,
+  gallery: `${process.env.NEXT_PUBLIC_API_BASE_URL}/gallery`,
+  notices: `${process.env.NEXT_PUBLIC_API_BASE_URL}/notices`,
+  results: `${process.env.NEXT_PUBLIC_API_BASE_URL}/results`,
+  upload: `${process.env.NEXT_PUBLIC_API_BASE_URL}/files/upload`,
+  articles: `${process.env.NEXT_PUBLIC_API_BASE_URL}/articles`,
+  alumni: `${process.env.NEXT_PUBLIC_API_BASE_URL}/alumni`,
+  auth: {
+    login: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth`,
+    profile: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/profile`,
+    changePassword: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/change-password`,
   },
+  users: `${process.env.NEXT_PUBLIC_API_BASE_URL}/users`,
+}
+
 }
 
 export const navigationConfig = [
