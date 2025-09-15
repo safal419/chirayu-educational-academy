@@ -23,10 +23,113 @@ export default function NoticesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const parseDateValue = (v: any): number => {
+      if (!v && v !== 0) return NaN;
+      // Date instance
+      if (v instanceof Date) return v.getTime();
+      // number: could be ms or seconds
+      if (typeof v === "number") {
+        // if looks like seconds (10 digits) convert to ms
+        if (v < 1e12) return v * 1000;
+        return v;
+      }
+      // string
+      if (typeof v === "string") {
+        const t = Date.parse(v);
+        return Number.isNaN(t) ? NaN : t;
+      }
+      // Firestore / Firebase timestamp shapes
+      if (typeof v === "object") {
+        const seconds = v.seconds ?? v._seconds ?? v._sec ?? v.sec;
+        const nanos = v.nanoseconds ?? v._nanoseconds ?? v.nanos ?? 0;
+        if (typeof seconds === "number") {
+          return seconds * 1000 + Math.floor((nanos || 0) / 1e6);
+        }
+        // sometimes nested like { createdAt: { seconds: ... } }
+        for (const key of Object.keys(v)) {
+          const nested = v[key];
+          if (
+            nested &&
+            typeof nested === "object" &&
+            (nested.seconds || nested._seconds)
+          ) {
+            const s = nested.seconds ?? nested._seconds;
+            const ns = nested.nanoseconds ?? nested._nanoseconds ?? 0;
+            if (typeof s === "number") return s * 1000 + Math.floor(ns / 1e6);
+          }
+        }
+      }
+      return NaN;
+    };
+
     const fetchNotices = async () => {
       try {
         const res = await axios.get(apiConfig.endpoints.notices);
-        setNotices(res.data);
+        const raw = Array.isArray(res.data) ? res.data : [];
+
+        // keep items from last 14 days only, and sort newest first
+        const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000;
+        const cutoff = Date.now() - TWO_WEEKS_MS;
+
+        const prepared = raw
+          .map((n: any) => {
+            // try common date fields and many possible shapes
+            const candidates = [
+              n.date,
+              n.createdAt,
+              n.created_at,
+              n.created,
+              n.publishedAt,
+              n.updatedAt,
+              n.meta?.createdAt,
+            ];
+            let parsed = NaN;
+            for (const c of candidates) {
+              const p = parseDateValue(c);
+              if (!Number.isNaN(p)) {
+                parsed = p;
+                break;
+              }
+            }
+            // fallback: search object recursively for a date-like value
+            if (Number.isNaN(parsed)) {
+              const searchRec = (obj: any, depth = 0): number => {
+                if (!obj || depth > 5) return NaN;
+                if (
+                  typeof obj === "string" ||
+                  typeof obj === "number" ||
+                  obj instanceof Date
+                ) {
+                  return parseDateValue(obj);
+                }
+                if (Array.isArray(obj)) {
+                  for (const v of obj) {
+                    const r = searchRec(v, depth + 1);
+                    if (!Number.isNaN(r)) return r;
+                  }
+                } else if (typeof obj === "object") {
+                  for (const k of Object.keys(obj)) {
+                    const r = searchRec(obj[k], depth + 1);
+                    if (!Number.isNaN(r)) return r;
+                  }
+                }
+                return NaN;
+              };
+              parsed = searchRec(n);
+            }
+
+            return { original: n, parsedDate: parsed || NaN };
+          })
+          .filter(
+            (p: any) => !Number.isNaN(p.parsedDate) && p.parsedDate >= cutoff
+          )
+          .sort((a: any, b: any) => b.parsedDate - a.parsedDate)
+          .map((p: any) => {
+            // attach parsedDate for rendering convenience
+            return { ...p.original, parsedDate: p.parsedDate };
+          });
+
+        setNotices(prepared);
       } catch (err) {
         console.error("Failed to fetch notices", err);
       } finally {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import imageCompression from "browser-image-compression"; // <--- added
 import { Plus, Edit, Trash2, Eye, X, Save } from "lucide-react";
@@ -61,6 +61,11 @@ export default function SEEResultsAdmin() {
   });
   const [isUploading, setIsUploading] = useState(false);
 
+  // preview cache for blob URLs: { performerId: blobUrl }
+  const [previewMap, setPreviewMap] = useState<Record<string, string>>({});
+  const previewMapRef = useRef(previewMap);
+  previewMapRef.current = previewMap;
+
   // Fetch all results
   const fetchResults = async () => {
     try {
@@ -80,6 +85,18 @@ export default function SEEResultsAdmin() {
     fetchResults();
   }, []);
 
+  // Clean up blob URLs when toppers change / component unmount
+  useEffect(() => {
+    return () => {
+      // revoke all blob URLs on unmount
+      Object.values(previewMapRef.current).forEach((url) => {
+        try {
+          if (url && url.startsWith("blob:")) URL.revokeObjectURL(url);
+        } catch {}
+      });
+    };
+  }, []);
+
   const handleAdd = () => {
     setSelectedResult(null); // <-- reset so new entry is created
     setFormData({
@@ -90,6 +107,7 @@ export default function SEEResultsAdmin() {
       results: {},
       toppers: [],
     });
+    setPreviewMap({});
     setIsAddDialogOpen(true);
   };
 
@@ -100,6 +118,8 @@ export default function SEEResultsAdmin() {
     }
     setSelectedResult(result);
     setFormData(result);
+    // ensure previewMap is cleared — previews will be created for File objects only
+    setPreviewMap({});
     setIsEditDialogOpen(true);
   };
 
@@ -144,11 +164,40 @@ export default function SEEResultsAdmin() {
     const updated = [...(formData.toppers || [])];
     updated[index] = { ...updated[index], [field]: value };
     setFormData({ ...formData, toppers: updated });
+
+    // if setting photo and it's a File, create a preview and cache it
+    if (field === "photo" && value instanceof File) {
+      // revoke existing if any
+      const id = updated[index].id;
+      const existing = previewMapRef.current[id];
+      if (existing && existing.startsWith("blob:")) {
+        try {
+          URL.revokeObjectURL(existing);
+        } catch {}
+      }
+      const url = URL.createObjectURL(value);
+      setPreviewMap((p) => ({ ...p, [id]: url }));
+    }
   };
 
   const removeTopPerformer = (index: number) => {
+    const performer = formData.toppers?.[index];
+    if (performer) {
+      const url = previewMap[performer.id];
+      if (url && url.startsWith("blob:")) {
+        try {
+          URL.revokeObjectURL(url);
+        } catch {}
+      }
+    }
     const updated = formData.toppers?.filter((_, i) => i !== index) || [];
     setFormData({ ...formData, toppers: updated });
+    // remove from preview map
+    setPreviewMap((p) => {
+      const next = { ...p };
+      if (performer) delete next[performer.id];
+      return next;
+    });
   };
 
   const handleImageUpload = (
@@ -158,10 +207,14 @@ export default function SEEResultsAdmin() {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Compress on selection to keep preview small and reduce upload size
+    // Immediately set the selected file so the UI shows an instant preview.
+    // We'll compress in background and replace the File afterwards.
+    updateTopPerformer(index, "photo", file);
+
+    // Compress on selection to keep upload size small (runs in background)
     const options = {
-      maxSizeMB: 0.8, // target max size in MB
-      maxWidthOrHeight: 1600, // max dimension
+      maxSizeMB: 0.8,
+      maxWidthOrHeight: 1600,
       useWebWorker: true,
       maxIteration: 10,
       fileType: file.type,
@@ -170,16 +223,120 @@ export default function SEEResultsAdmin() {
     (async () => {
       try {
         const compressedFile = await imageCompression(file, options);
-        // compressedFile is a File (or Blob); store it so handleSave can upload
+        // If compression returned a new File (or Blob) replace the performer photo so
+        // upload will use the compressed file and updateTopPerformer will refresh preview.
+        // If compression yields same object, this still works.
         updateTopPerformer(index, "photo", compressedFile as File);
         toast.success("Image compressed");
       } catch (err) {
         console.error("Image compression failed", err);
-        // Fallback to original file if compression fails
-        updateTopPerformer(index, "photo", file);
+        // keep the original file (already set) and notify user
         toast.error("Image compression failed, original file will be used");
       }
     })();
+  };
+
+  // Helper to upload a single File to the configured upload endpoint.
+  // Mirrors the approach used in admin blog/gallery pages to handle common backend shapes.
+  const uploadImage = async (file: File): Promise<string> => {
+    const form = new FormData();
+    form.append("files", file);
+
+    const prefixIfRelative = (u: string) => {
+      if (!u) return u;
+      if (u.startsWith("http://") || u.startsWith("https://")) return u;
+      if (u.startsWith("/"))
+        return (
+          (typeof window !== "undefined" ? window.location.origin : "") + u
+        );
+      return u;
+    };
+
+    const findUrlRecursively = (obj: any, depth = 0): string | null => {
+      if (!obj || depth > 6) return null;
+      if (typeof obj === "string") {
+        // treat anything that looks like a path or url as candidate
+        if (
+          obj.startsWith("http") ||
+          obj.startsWith("/") ||
+          obj.includes("uploads") ||
+          obj.includes("cdn")
+        )
+          return obj;
+        return null;
+      }
+      if (Array.isArray(obj)) {
+        for (const v of obj) {
+          const found = findUrlRecursively(v, depth + 1);
+          if (found) return found;
+        }
+      } else if (typeof obj === "object") {
+        // common keys
+        const COMMON_KEYS = [
+          "url",
+          "secure_url",
+          "location",
+          "path",
+          "file",
+          "filename",
+          "name",
+          "src",
+        ];
+        for (const k of COMMON_KEYS) {
+          if (obj[k] && typeof obj[k] === "string") return obj[k];
+        }
+        // fallback scan values
+        for (const key of Object.keys(obj)) {
+          const found = findUrlRecursively(obj[key], depth + 1);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+
+    try {
+      const res = await axios.post(UPLOAD_URL, form, {
+        // do NOT force multipart header manually if backend requires the boundary;
+        // axios will set it automatically. Remove explicit header to be safe.
+        // headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (!res || typeof res.data === "undefined" || res.data === null) {
+        throw new Error("Empty upload response");
+      }
+
+      // Quick passes for common shapes
+      if (typeof res.data === "string") return prefixIfRelative(res.data);
+
+      // array of objects [{ url: ... }]
+      if (Array.isArray(res.data)) {
+        const candidate = findUrlRecursively(res.data);
+        if (candidate) return prefixIfRelative(candidate);
+      }
+
+      // object with url / data / files / etc.
+      if (typeof res.data === "object") {
+        // common direct cases
+        if (res.data.url && typeof res.data.url === "string")
+          return prefixIfRelative(res.data.url);
+        if (res.data.secure_url && typeof res.data.secure_url === "string")
+          return prefixIfRelative(res.data.secure_url);
+        if (res.data.location && typeof res.data.location === "string")
+          return prefixIfRelative(res.data.location);
+        if (res.data.path && typeof res.data.path === "string")
+          return prefixIfRelative(res.data.path);
+
+        // nested container e.g. { data: { url: ... } } or { files: [...] }
+        const candidate = findUrlRecursively(res.data);
+        if (candidate) return prefixIfRelative(candidate);
+      }
+
+      console.error("Unexpected upload response:", res.data);
+      throw new Error("Unexpected upload response");
+    } catch (err) {
+      console.error("Upload error:", err);
+      throw err;
+    }
   };
 
   // Save Result
@@ -194,8 +351,6 @@ export default function SEEResultsAdmin() {
             performer.photo instanceof Blob
           ) {
             try {
-              const form = new FormData();
-
               // Ensure we append a File (not a plain Blob)
               const uploadFile =
                 performer.photo instanceof File
@@ -204,19 +359,8 @@ export default function SEEResultsAdmin() {
                       type: (performer.photo as Blob).type || "image/jpeg",
                     });
 
-              form.append("files", uploadFile); // ✅ correct field name
-
-              const res = await axios.post(UPLOAD_URL, form, {
-                headers: { "Content-Type": "multipart/form-data" },
-              });
-
-              if (res.data && res.data.url) {
-                return { ...performer, photo: res.data.url }; // ✅ match backend
-              } else {
-                console.error("Upload response format unexpected:", res.data);
-                toast.error("Failed to upload image for " + performer.name);
-                return { ...performer, photo: "/placeholder.svg" };
-              }
+              const url = await uploadImage(uploadFile);
+              return { ...performer, photo: url };
             } catch (uploadError) {
               console.error(
                 "Upload error for performer:",
@@ -248,6 +392,13 @@ export default function SEEResultsAdmin() {
         toast.success("Result added successfully");
       }
 
+      // cleanup previews
+      Object.values(previewMap).forEach((url) => {
+        try {
+          if (url && url.startsWith("blob:")) URL.revokeObjectURL(url);
+        } catch {}
+      });
+      setPreviewMap({});
       setFormData({ results: {}, toppers: [] });
       setSelectedResult(null);
       setIsAddDialogOpen(false);
@@ -259,6 +410,36 @@ export default function SEEResultsAdmin() {
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const getPreviewFor = (performer: TopPerformer) => {
+    // prefer cached preview (for File objects)
+    const cached = previewMap[performer.id];
+    if (cached) return cached;
+    // if performer.photo is File, create, cache and return
+    if (performer.photo instanceof File) {
+      const url = URL.createObjectURL(performer.photo);
+      setPreviewMap((p) => ({ ...p, [performer.id]: url }));
+      return url;
+    }
+    // if photo is remote url string, just return it
+    return (performer.photo as string) || "/placeholder.svg";
+  };
+
+  // helper to close add/edit dialog and cleanup previews
+  const closeAddEditDialog = () => {
+    // revoke blob URLs
+    Object.values(previewMapRef.current).forEach((url) => {
+      try {
+        if (url && url.startsWith("blob:")) URL.revokeObjectURL(url);
+      } catch {}
+    });
+    setPreviewMap({});
+    setIsAddDialogOpen(false);
+    setIsEditDialogOpen(false);
+    setSelectedResult(null);
+    // optional: reset form if needed
+    // setFormData({ results: {}, toppers: [] });
   };
 
   return (
@@ -344,7 +525,10 @@ export default function SEEResultsAdmin() {
       {/* Add / Edit Dialog */}
       <Dialog
         open={isAddDialogOpen || isEditDialogOpen}
-        onOpenChange={() => {}}
+        onOpenChange={(open) => {
+          // when user clicks the dialog close (X) or clicks outside, open will be false
+          if (!open) closeAddEditDialog();
+        }}
       >
         <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-white">
           <DialogHeader>
@@ -421,11 +605,7 @@ export default function SEEResultsAdmin() {
                       <div className="flex flex-col items-center">
                         <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden mb-2">
                           <img
-                            src={
-                              performer.photo instanceof File
-                                ? URL.createObjectURL(performer.photo)
-                                : performer.photo || "/placeholder.svg"
-                            }
+                            src={getPreviewFor(performer as TopPerformer)}
                             alt={performer.name || "Performer"}
                             className="w-full h-full object-cover"
                             onError={(e) => {
@@ -505,10 +685,7 @@ export default function SEEResultsAdmin() {
             <div className="flex justify-end space-x-2">
               <Button
                 variant="outline"
-                onClick={() => {
-                  setIsAddDialogOpen(false);
-                  setIsEditDialogOpen(false);
-                }}
+                onClick={closeAddEditDialog}
               >
                 Cancel
               </Button>

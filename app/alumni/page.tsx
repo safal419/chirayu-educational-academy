@@ -289,7 +289,11 @@ export default function AlumniPage() {
                         )}
                         {alumni.linkedIn && (
                           <a
-                            href={alumni.linkedIn}
+                            href={
+                              alumni.linkedIn.startsWith("http")
+                                ? alumni.linkedIn
+                                : `https://${alumni.linkedIn}`
+                            }
                             target="_blank"
                             rel="noreferrer"
                             className="text-sm text-green-700 underline inline-flex items-center"

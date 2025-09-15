@@ -131,16 +131,16 @@ export default function ContactPage() {
             </div>
 
             {/* Map Placeholder */}
-            <div className="bg-gray-200 rounded-lg h-64 flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-2" />
-                <p className="text-gray-500 text-xs sm:text-sm">
-                  Interactive Map
-                </p>
-                <p className="text-gray-400 text-xs sm:text-sm">
-                  Indrayani-4, Kathmandu
-                </p>
-              </div>
+            <div className="rounded-lg overflow-hidden">
+              <iframe
+                title="Chirayu Educational Academy - Map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d798.9778059050258!2d85.43318374750125!3d27.72973078034798!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1b003288084d%3A0x51f75609fe0a7344!2sChirayu%20Educational%20Academy!5e1!3m2!1sen!2snp!4v1757910837204!5m2!1sen!2snp"
+                className="w-full h-64 sm:h-80 md:h-96 border-0"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
             </div>
           </div>
 

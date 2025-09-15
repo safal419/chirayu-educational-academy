@@ -41,7 +41,7 @@ export default function Hero() {
               className="inline-flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6"
             >
               <Award className="w-4 h-4 mr-2" />
-              Excellence in Education Since 2006
+              Education for Eternity
             </motion.div>
 
             <motion.h1

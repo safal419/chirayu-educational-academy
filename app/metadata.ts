@@ -18,7 +18,6 @@ export const metadata: Metadata = {
   authors: [
     {
       name: siteConfig.name,
-      url: siteConfig.url,
     },
   ],
   creator: siteConfig.name,

@@ -431,7 +431,11 @@ export default function AlumniPage() {
                         LinkedIn
                       </label>
                       <a
-                        href={viewingAlumni.linkedIn}
+                        href={
+                          viewingAlumni.linkedIn.startsWith("http")
+                            ? viewingAlumni.linkedIn
+                            : `https://${viewingAlumni.linkedIn}`
+                        }
                         target="_blank"
                         rel="noreferrer"
                         className="text-blue-600 hover:underline"

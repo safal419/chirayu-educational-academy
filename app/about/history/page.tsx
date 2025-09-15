@@ -123,7 +123,7 @@ export default function HistoryPage() {
                 The Beginning
               </h2>
               <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                In 2055 B.S., a group of visionary educators came together with
+                In 2062 B.S., a group of visionary educators came together with
                 a dream to create an educational institution that would nurture
                 young minds and prepare them for the challenges of the modern
                 world. Starting with just 50 students and 5 teachers, Chirayu

@@ -132,7 +132,7 @@ export default function PrincipalPage() {
                 <p>
                   It is with great pride and joy that I welcome you to Chirayu
                   Educational Academy. As we continue our journey of educational
-                  excellence that began in 2055 B.S., I am constantly amazed by
+                  excellence that began in 2062 B.S., I am constantly amazed by
                   the dedication of our students, the support of our parents,
                   and the commitment of our faculty.
                 </p>

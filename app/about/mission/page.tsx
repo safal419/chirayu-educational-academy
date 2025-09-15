@@ -144,7 +144,7 @@ export default function MissionVisionPage() {
             </div>
             <div className="relative">
               <img
-                src="/school-classroom-students.png"
+                src="/bus.jpg"
                 alt="Students in classroom"
                 className="rounded-2xl shadow-2xl hover:shadow-3xl transition-shadow duration-300"
               />
@@ -192,7 +192,7 @@ export default function MissionVisionPage() {
             </div>
             <div className="lg:order-1 relative">
               <img
-                src="/school-graduation.png"
+                src="/play.jpg"
                 alt="Graduation ceremony"
                 className="rounded-2xl shadow-2xl hover:shadow-3xl transition-shadow duration-300"
               />
