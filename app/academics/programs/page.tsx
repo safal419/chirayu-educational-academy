@@ -149,7 +149,7 @@ export default function ProgramsOverviewPage() {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="min-h-screen bg-gradient-to-br from-blue-50 to-white"
+      className="min-h-screen bg-gradient-to-br from-blue-50 to-white px-4"
     >
       {/* Hero Section */}
       <motion.section

@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 
 export default function PopupImage() {
@@ -6,8 +7,12 @@ export default function PopupImage() {
 
   useEffect(() => {
     const isHomepage = window.location.pathname === "/";
-    if (isHomepage) {
+    if (!isHomepage) return;
+    // Only show if not shown before in this browser
+    const hasSeenPopup = localStorage.getItem("popupImageShown");
+    if (!hasSeenPopup) {
       setShowPopup(true);
+      localStorage.setItem("popupImageShown", "true");
     }
   }, []);
 

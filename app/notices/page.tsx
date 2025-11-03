@@ -67,10 +67,7 @@ export default function NoticesPage() {
         const res = await axios.get(apiConfig.endpoints.notices);
         const raw = Array.isArray(res.data) ? res.data : [];
 
-        // keep items from last 14 days only, and sort newest first
-        const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000;
-        const cutoff = Date.now() - TWO_WEEKS_MS;
-
+        // sort all notices by date (latest first)
         const prepared = raw
           .map((n: any) => {
             // try common date fields and many possible shapes
@@ -120,9 +117,7 @@ export default function NoticesPage() {
 
             return { original: n, parsedDate: parsed || NaN };
           })
-          .filter(
-            (p: any) => !Number.isNaN(p.parsedDate) && p.parsedDate >= cutoff
-          )
+          .filter((p: any) => !Number.isNaN(p.parsedDate))
           .sort((a: any, b: any) => b.parsedDate - a.parsedDate)
           .map((p: any) => {
             // attach parsedDate for rendering convenience

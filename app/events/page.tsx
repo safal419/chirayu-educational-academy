@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Calendar, MapPin, Clock, Users, ExternalLink } from "lucide-react";
+import EventDetailModal from "@/components/events/EventDetailModal";
 import Image from "next/image";
 import axios from "axios";
 import { apiConfig } from "@/lib/config";
@@ -16,13 +17,39 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
-};
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeInOut",
+    },
+  },
+} as const;
+
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+  category: string;
+  image?: string;
+  organizer?: string;
+  contact?: string;
+  details?: string;
+  venue?: string;
+  participants?: string;
+  attendees?: number;
+}
 
 export default function EventsPage() {
-  const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
-  const [pastEvents, setPastEvents] = useState<any[]>([]);
+  const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
+  const [pastEvents, setPastEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -61,11 +88,11 @@ export default function EventsPage() {
   if (loading)
     return <Loading mode="skeleton" count={2} message="Loading events..." />;
 
-  if (upcomingEvents.length === 0)
+  if (upcomingEvents.length === 0 && pastEvents.length === 0)
     return (
       <EmptyState
-        title="No upcoming events"
-        message="There are no upcoming events at the moment."
+        title="No events found"
+        message="There are no events available at the moment."
         action={{ label: "Refresh", onClick: () => window.location.reload() }}
       />
     );
@@ -234,6 +261,10 @@ export default function EventsPage() {
 
                     {/* View Details Button */}
                     <motion.button
+                      onClick={() => {
+                        setSelectedEvent(event);
+                        setIsModalOpen(true);
+                      }}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       className="w-full bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
@@ -248,6 +279,16 @@ export default function EventsPage() {
           )}
         </motion.section>
       </div>
+
+      {/* Event Detail Modal */}
+      <EventDetailModal
+        event={selectedEvent}
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedEvent(null);
+        }}
+      />
     </motion.div>
   );
 }

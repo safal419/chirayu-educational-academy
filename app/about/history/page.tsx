@@ -90,7 +90,7 @@ export default function HistoryPage() {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="min-h-screen"
+      className="min-h-screen px-4"
     >
       {/* Hero Section */}
       <motion.section

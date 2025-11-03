@@ -42,6 +42,7 @@ const menuItems = [
       { title: "Events", href: "/admin/events", icon: Calendar },
       { title: "Blog", href: "/admin/blog", icon: Newspaper },
       { title: "Gallery", href: "/admin/gallery", icon: ImageIcon },
+      { title: "Settings", href: "/admin/settings", icon: Settings },
     ],
   },
   {

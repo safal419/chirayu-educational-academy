@@ -12,6 +12,7 @@ import NewsUpdates from "@/components/home/news-updates";
 import SEEResults from "@/components/home/see-results";
 import PhotoGallery from "@/components/home/photo-gallery";
 import PopupImage from "@/components/PopupImage";
+import MissionVisionHome from "@/components/home/mission-vision";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -45,6 +46,10 @@ export default function HomePage() {
 
       <motion.div variants={sectionVariants}>
         <QuickStats />
+      </motion.div>
+
+      <motion.div variants={sectionVariants}>
+        <MissionVisionHome />
       </motion.div>
 
       <motion.div variants={sectionVariants}>
