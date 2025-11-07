@@ -15,12 +15,17 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] },
+  },
 };
 
 export default function NoticesPage() {
   const [notices, setNotices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(5);
 
   useEffect(() => {
     const parseDateValue = (v: any): number => {
@@ -165,7 +170,38 @@ export default function NoticesPage() {
 
   if (loading)
     return (
-      <Loading mode="skeleton" count={3} message="Loading latest notices..." />
+      <motion.div
+        className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <div className="max-w-6xl mx-auto px-4">
+          {/* Header */}
+          <motion.div variants={itemVariants} className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              <Bell className="inline-block mr-3 text-blue-600" size={48} />
+              School Notices
+            </h1>
+            <p className="text-l text-gray-600 max-w-3xl mx-auto">
+              Stay updated with the latest announcements, events, and important
+              information
+            </p>
+          </motion.div>
+          {/* Skeleton Notice Boxes */}
+          <motion.div variants={itemVariants} className="space-y-6">
+            {[...Array(5)].map((_, idx) => (
+              <motion.div
+                key={idx}
+                variants={itemVariants}
+                className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500"
+              >
+                <Loading mode="skeleton" count={1} message="" />
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </motion.div>
     );
 
   if (!notices.length)
@@ -176,6 +212,9 @@ export default function NoticesPage() {
         action={{ label: "Refresh", onClick: () => window.location.reload() }}
       />
     );
+
+  const visibleNotices = notices.slice(0, visibleCount);
+
   return (
     <motion.div
       className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12"
@@ -198,7 +237,7 @@ export default function NoticesPage() {
 
         {/* Notices Grid */}
         <motion.div variants={itemVariants} className="space-y-6">
-          {notices.map((notice) => (
+          {visibleNotices.map((notice) => (
             <motion.div
               key={notice.id}
               variants={itemVariants}
@@ -249,6 +288,16 @@ export default function NoticesPage() {
             </motion.div>
           ))}
         </motion.div>
+        {visibleCount < notices.length && (
+          <div className="flex justify-center mt-8">
+            <button
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+              onClick={() => setVisibleCount((prev) => prev + 5)}
+            >
+              See More
+            </button>
+          </div>
+        )}
       </div>
     </motion.div>
   );

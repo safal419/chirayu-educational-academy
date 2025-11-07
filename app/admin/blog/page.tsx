@@ -85,19 +85,21 @@ export default function BlogPage() {
     setShowEditModal(true);
   };
 
-  const handleDelete = async (id: number | string) => {
+  const handleDelete = async (blog: BlogPost) => {
     if (!confirm("Are you sure you want to delete this blog post?")) return;
     try {
-      await axios.delete(`${endpoint}/${id}`);
-      setBlogs((prev) => prev.filter((item) => item.id !== id));
+      setSelectedBlog(blog);
+      await axios.delete(`${endpoint}/${blog._id}`);
+      setBlogs((prev) => prev.filter((item) => item._id !== blog._id));
       toast.success("Post deleted");
+      setSelectedBlog(null);
     } catch (err) {
       console.error("Delete error:", err);
       toast.error("Failed to delete post");
+      setSelectedBlog(null);
     }
   };
 
-  // Helper function to upload image
   const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("files", file);
@@ -364,7 +366,7 @@ export default function BlogPage() {
                       variant="outline"
                       size="sm"
                       className="text-red-600 hover:text-red-700 shadow-sm hover:shadow-md transition-shadow bg-transparent"
-                      onClick={() => handleDelete(blog.id)}
+                      onClick={() => handleDelete(blog)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

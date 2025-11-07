@@ -25,6 +25,8 @@ export const apiConfig = {
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
    endpoints : {
   events: `${process.env.NEXT_PUBLIC_API_BASE_URL}/events`,
+  popup: `${process.env.NEXT_PUBLIC_API_BASE_URL}/popup-image`,
+  academics: `${process.env.NEXT_PUBLIC_API_BASE_URL}/academics`,
   gallery: `${process.env.NEXT_PUBLIC_API_BASE_URL}/gallery`,
   notices: `${process.env.NEXT_PUBLIC_API_BASE_URL}/notices`,
   results: `${process.env.NEXT_PUBLIC_API_BASE_URL}/results`,
@@ -54,7 +56,7 @@ export const navigationConfig = [
   {
     title: "Academics",
     items: [
-      { title: "Programs Overview", href: "/academics/programs" },
+      { title: "Programs Overview", href: "/academics" },
     ],
   },
   {

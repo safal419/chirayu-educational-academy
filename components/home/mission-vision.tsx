@@ -2,7 +2,10 @@ import { Eye, Target } from "lucide-react";
 
 export default function MissionVisionHome() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-white relative">
+      {/* Section Divider - Bottom */}
+      <div className="absolute -bottom-px left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -88,8 +91,6 @@ export default function MissionVisionHome() {
           </div>
         </div>
       </div>
-      {/* Section Divider */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent"></div>
     </section>
   );
 }

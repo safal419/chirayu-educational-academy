@@ -52,6 +52,9 @@ export default function WhyChooseUs() {
 
   return (
     <section className="py-20 bg-gradient-to-br from-gray-50 to-white relative">
+      {/* Section Divider - Top */}
+      <div className="absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
