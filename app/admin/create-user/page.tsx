@@ -22,12 +22,14 @@ import {
   CheckCircle,
   Users,
 } from "lucide-react";
-import { getAuthHeaders } from "@/lib/auth-utils";
+import { getAuthHeaders, getUserData } from "@/lib/auth-utils";
 import { apiConfig } from "@/lib/config";
 import toast from "react-hot-toast";
 import axios from "axios";
 
 export default function CreateUserPage() {
+  const currentUser = typeof window !== "undefined" ? getUserData() : null;
+
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -60,7 +62,6 @@ export default function CreateUserPage() {
     }
 
     try {
-      // Call user creation API
       const response = await axios.post(apiConfig.endpoints.users, formData, {
         headers: getAuthHeaders(),
       });
@@ -89,8 +90,6 @@ export default function CreateUserPage() {
         setError("User with this email already exists");
       } else if (error.response?.status === 400) {
         setError(error.response.data.message || "Invalid user data");
-      } else if (error.response?.status === 403) {
-        setError("You don't have permission to create users");
       } else {
         setError("Failed to create user. Please try again.");
       }
@@ -170,10 +169,7 @@ export default function CreateUserPage() {
                         type="text"
                         value={formData.name}
                         onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            name: e.target.value,
-                          })
+                          setFormData({ ...formData, name: e.target.value })
                         }
                         className="pl-10"
                         placeholder="Enter full name"
@@ -194,10 +190,7 @@ export default function CreateUserPage() {
                       type="email"
                       value={formData.email}
                       onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          email: e.target.value,
-                        })
+                        setFormData({ ...formData, email: e.target.value })
                       }
                       placeholder="Enter email address"
                       required
@@ -217,10 +210,7 @@ export default function CreateUserPage() {
                         type={showPassword ? "text" : "password"}
                         value={formData.password}
                         onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            password: e.target.value,
-                          })
+                          setFormData({ ...formData, password: e.target.value })
                         }
                         className="pr-12"
                         placeholder="Enter password"
@@ -253,10 +243,7 @@ export default function CreateUserPage() {
                     <Select
                       value={formData.role}
                       onValueChange={(value) =>
-                        setFormData({
-                          ...formData,
-                          role: value,
-                        })
+                        setFormData({ ...formData, role: value })
                       }
                     >
                       <SelectTrigger>

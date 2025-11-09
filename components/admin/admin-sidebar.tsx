@@ -50,6 +50,7 @@ const menuItems = [
     icon: GraduationCap,
     children: [
       { title: "SEE Results", href: "/admin/see-results", icon: Trophy },
+      { title: "Academics", href: "/admin/academics", icon: BookOpen },
       { title: "Alumni", href: "/admin/alumni", icon: Users },
     ],
   },

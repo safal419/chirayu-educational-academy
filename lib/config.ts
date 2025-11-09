@@ -34,11 +34,11 @@ export const apiConfig = {
   articles: `${process.env.NEXT_PUBLIC_API_BASE_URL}/articles`,
   alumni: `${process.env.NEXT_PUBLIC_API_BASE_URL}/alumni`,
   auth: {
-    login: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth`,
+    login: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
     profile: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/profile`,
     changePassword: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/change-password`,
   },
-  users: `${process.env.NEXT_PUBLIC_API_BASE_URL}/users`,
+  users: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/register`,
 }
 
 }

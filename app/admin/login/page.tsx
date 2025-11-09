@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -16,6 +15,8 @@ import {
   AlertCircle,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { AuthService } from "@/lib/auth-service";
+import { setAuthData } from "@/lib/auth-utils";
 
 export default function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -31,28 +32,33 @@ export default function AdminLogin() {
     e.preventDefault();
     setIsLoading(true);
     setError("");
+    try {
+      const res = await AuthService.login({
+        email: credentials.email,
+        password: credentials.password,
+      });
 
-    // Hardcoded admin credentials
-    const HARD_CODED_EMAIL = "admin@chirayueducational.edu";
-    const HARD_CODED_PASSWORD = "Chirayuacademy@4321";
+      const token = (res as any).access_token || (res as any).accessToken;
+      const user = (res as any).user;
 
-    if (
-      credentials.email === HARD_CODED_EMAIL &&
-      credentials.password === HARD_CODED_PASSWORD
-    ) {
-      try {
-        localStorage.setItem("adminAuth", "true");
-        toast.success("Welcome, Admin!");
-        setIsLoading(false);
-        router.replace("/admin");
-      } catch (err: any) {
-        setError("Unable to save login state. Please check browser settings.");
-        toast.error("Login state not saved. Enable storage and retry.");
-        setIsLoading(false);
+      if (!token) {
+        throw new Error("Authentication failed: no token received");
       }
-    } else {
-      setError("Invalid email or password");
-      toast.error("Invalid email or password");
+
+      setAuthData({ user, access_token: token } as any);
+
+      setIsLoading(false);
+
+      router.replace("/admin");
+    } catch (err: any) {
+      console.error("Login error:", err);
+      const msg = err?.message || "Invalid email or password";
+
+      // Show inline error and toast, both disappear after 2.5 seconds
+      setError(msg);
+      setTimeout(() => setError(""), 2500);
+      toast.error(msg, { duration: 2500 });
+
       setIsLoading(false);
     }
   };
@@ -83,7 +89,7 @@ export default function AdminLogin() {
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-6">
               {error && (
-                <div className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                <div className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 transition-all duration-200">
                   <AlertCircle className="h-5 w-5 flex-shrink-0" />
                   <span className="text-sm">{error}</span>
                 </div>
@@ -99,10 +105,7 @@ export default function AdminLogin() {
                     type="email"
                     value={credentials.email}
                     onChange={(e) =>
-                      setCredentials({
-                        ...credentials,
-                        email: e.target.value,
-                      })
+                      setCredentials({ ...credentials, email: e.target.value })
                     }
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                     placeholder="Enter email address"
