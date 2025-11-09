@@ -1,9 +1,8 @@
 "use client";
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
-import { useEffect, useState } from "react";
+import TopBar from "@/components/layout/top-bar";
 import { usePathname } from "next/navigation";
-import { isAuthenticated } from "@/lib/auth-utils";
 
 export default function ClientLayout({
   children,
@@ -18,7 +17,12 @@ export default function ClientLayout({
 
   return (
     <>
-      {!shouldHideLayout && <Navbar />}
+      {!shouldHideLayout && (
+        <>
+          <TopBar />
+          <Navbar />
+        </>
+      )}
       {children}
       {!shouldHideLayout && <Footer />}
     </>

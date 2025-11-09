@@ -108,6 +108,7 @@ export default function SEEResultsAdmin() {
       toppers: [],
     });
     setPreviewMap({});
+    setIsEditDialogOpen(false); // Ensure edit dialog is closed
     setIsAddDialogOpen(true);
   };
 
@@ -116,10 +117,20 @@ export default function SEEResultsAdmin() {
       toast.error("Cannot edit: missing ID");
       return;
     }
-    setSelectedResult(result);
-    setFormData(result);
+    // Deep copy the result to avoid mutating the original
+    // Ensure each performer has a unique ID (in case some are missing or duplicated)
+    const resultCopy = {
+      ...result,
+      toppers: result.toppers?.map((t, idx) => ({
+        ...t,
+        id: t.id || `performer-${Date.now()}-${idx}`, // Ensure unique ID
+      })) || [],
+    };
+    setSelectedResult(resultCopy);
+    setFormData(resultCopy);
     // ensure previewMap is cleared — previews will be created for File objects only
     setPreviewMap({});
+    setIsAddDialogOpen(false); // Ensure add dialog is closed
     setIsEditDialogOpen(true);
   };
 
@@ -157,31 +168,37 @@ export default function SEEResultsAdmin() {
   };
 
   const updateTopPerformer = (
-    index: number,
+    performerId: string,
     field: keyof TopPerformer,
     value: string | File
   ) => {
-    const updated = [...(formData.toppers || [])];
-    updated[index] = { ...updated[index], [field]: value };
-    setFormData({ ...formData, toppers: updated });
+    // Use functional update to ensure we're working with latest state
+    setFormData((prevFormData) => {
+      const updated = (prevFormData.toppers || []).map((performer) => {
+        if (performer.id === performerId) {
+          return { ...performer, [field]: value };
+        }
+        return performer;
+      });
+      return { ...prevFormData, toppers: updated };
+    });
 
     // if setting photo and it's a File, create a preview and cache it
     if (field === "photo" && value instanceof File) {
       // revoke existing if any
-      const id = updated[index].id;
-      const existing = previewMapRef.current[id];
+      const existing = previewMapRef.current[performerId];
       if (existing && existing.startsWith("blob:")) {
         try {
           URL.revokeObjectURL(existing);
         } catch {}
       }
       const url = URL.createObjectURL(value);
-      setPreviewMap((p) => ({ ...p, [id]: url }));
+      setPreviewMap((p) => ({ ...p, [performerId]: url }));
     }
   };
 
-  const removeTopPerformer = (index: number) => {
-    const performer = formData.toppers?.[index];
+  const removeTopPerformer = (performerId: string) => {
+    const performer = formData.toppers?.find((p) => p.id === performerId);
     if (performer) {
       const url = previewMap[performer.id];
       if (url && url.startsWith("blob:")) {
@@ -190,26 +207,33 @@ export default function SEEResultsAdmin() {
         } catch {}
       }
     }
-    const updated = formData.toppers?.filter((_, i) => i !== index) || [];
+    const updated = formData.toppers?.filter((p) => p.id !== performerId) || [];
     setFormData({ ...formData, toppers: updated });
     // remove from preview map
     setPreviewMap((p) => {
       const next = { ...p };
-      if (performer) delete next[performer.id];
+      delete next[performerId];
       return next;
     });
   };
 
   const handleImageUpload = (
-    index: number,
+    performerId: string,
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // Verify performer exists
+    const performerExists = formData.toppers?.some((p) => p.id === performerId);
+    if (!performerExists) {
+      toast.error("Performer not found");
+      return;
+    }
+
     // Immediately set the selected file so the UI shows an instant preview.
     // We'll compress in background and replace the File afterwards.
-    updateTopPerformer(index, "photo", file);
+    updateTopPerformer(performerId, "photo", file);
 
     // Compress on selection to keep upload size small (runs in background)
     const options = {
@@ -220,13 +244,14 @@ export default function SEEResultsAdmin() {
       fileType: file.type,
     };
 
+    // Capture the performerId in the closure
+    const capturedPerformerId = performerId;
+    
     (async () => {
       try {
         const compressedFile = await imageCompression(file, options);
-        // If compression returned a new File (or Blob) replace the performer photo so
-        // upload will use the compressed file and updateTopPerformer will refresh preview.
-        // If compression yields same object, this still works.
-        updateTopPerformer(index, "photo", compressedFile as File);
+        // Update with compressed file - use captured ID to avoid stale closure
+        updateTopPerformer(capturedPerformerId, "photo", compressedFile as File);
         toast.success("Image compressed");
       } catch (err) {
         console.error("Image compression failed", err);
@@ -342,23 +367,32 @@ export default function SEEResultsAdmin() {
   // Save Result
   const handleSave = async () => {
     try {
+      // Validate required fields
+      if (!formData.batch || !formData.year) {
+        toast.error("Please fill in batch and year");
+        return;
+      }
+
       setIsUploading(true);
 
       const toppersWithPhotos = await Promise.all(
         (formData.toppers || []).map(async (performer) => {
-          if (
-            performer.photo instanceof File ||
-            performer.photo instanceof Blob
-          ) {
+          const photo = performer.photo;
+          // Check if photo is a File or Blob (not a string URL)
+          if (typeof photo !== "string") {
             try {
-              // Ensure we append a File (not a plain Blob)
+              // If it's already a File, use it directly
+              // If it's a Blob, convert to File
               const uploadFile =
-                performer.photo instanceof File
-                  ? performer.photo
-                  : new File([performer.photo], `photo-${Date.now()}.jpg`, {
-                      type: (performer.photo as Blob).type || "image/jpeg",
-                    });
-
+                photo instanceof File
+                  ? photo
+                  : new File(
+                      [photo as Blob],
+                      `photo-${Date.now()}.jpg`,
+                      {
+                        type: (photo as Blob).type || "image/jpeg",
+                      }
+                    );
               const url = await uploadImage(uploadFile);
               return { ...performer, photo: url };
             } catch (uploadError) {
@@ -384,10 +418,15 @@ export default function SEEResultsAdmin() {
         toppers: toppersWithPhotos,
       };
 
-      if (selectedResult && isEditDialogOpen) {
+      // Explicitly check if we're editing (selectedResult must exist and have an ID)
+      const isEditing = selectedResult?.id && isEditDialogOpen;
+      
+      if (isEditing) {
+        // Update existing result
         await axios.patch(`${API_URL}/${selectedResult.id}`, payload);
         toast.success("Result updated successfully");
       } else {
+        // Create new result - always POST
         await axios.post(API_URL, payload);
         toast.success("Result added successfully");
       }
@@ -438,8 +477,8 @@ export default function SEEResultsAdmin() {
     setIsAddDialogOpen(false);
     setIsEditDialogOpen(false);
     setSelectedResult(null);
-    // optional: reset form if needed
-    // setFormData({ results: {}, toppers: [] });
+    // Reset form data when closing
+    setFormData({ results: {}, toppers: [] });
   };
 
   return (
@@ -631,7 +670,7 @@ export default function SEEResultsAdmin() {
                           accept="image/*"
                           id={`file-${performer.id}`}
                           className="hidden"
-                          onChange={(e) => handleImageUpload(index, e)}
+                          onChange={(e) => handleImageUpload(performer.id, e)}
                         />
                       </div>
 
@@ -640,28 +679,28 @@ export default function SEEResultsAdmin() {
                         <Input
                           value={performer.name}
                           onChange={(e) =>
-                            updateTopPerformer(index, "name", e.target.value)
+                            updateTopPerformer(performer.id, "name", e.target.value)
                           }
                           placeholder="Name"
                         />
                         <Input
                           value={performer.grade}
                           onChange={(e) =>
-                            updateTopPerformer(index, "grade", e.target.value)
+                            updateTopPerformer(performer.id, "grade", e.target.value)
                           }
                           placeholder="Grade"
                         />
                         <Input
                           value={performer.gpa}
                           onChange={(e) =>
-                            updateTopPerformer(index, "gpa", e.target.value)
+                            updateTopPerformer(performer.id, "gpa", e.target.value)
                           }
                           placeholder="GPA"
                         />
                         <Input
                           value={performer.school}
                           onChange={(e) =>
-                            updateTopPerformer(index, "school", e.target.value)
+                            updateTopPerformer(performer.id, "school", e.target.value)
                           }
                           placeholder="School"
                         />
@@ -672,7 +711,7 @@ export default function SEEResultsAdmin() {
                         type="button"
                         variant="outline"
                         size="sm"
-                        onClick={() => removeTopPerformer(index)}
+                        onClick={() => removeTopPerformer(performer.id)}
                       >
                         <X className="w-4 h-4" />
                       </Button>

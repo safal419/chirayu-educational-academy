@@ -6,7 +6,7 @@ export const siteConfig = {
   grades: "Nursery to Grade 10",
   contact: {
     phone: "+977-9851060977",
-    email: "info@chirayueducationalacademy.edu.np",
+    email: "chirayu2062@gmail.com",
     address: "Sankharapur Municipality, Indrayani-9",
   },
   social: {
@@ -23,23 +23,23 @@ export const siteConfig = {
 
 export const apiConfig = {
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
-   endpoints : {
-  events: `${process.env.NEXT_PUBLIC_API_BASE_URL}/events`,
-  popup: `${process.env.NEXT_PUBLIC_API_BASE_URL}/popup-image`,
-  academics: `${process.env.NEXT_PUBLIC_API_BASE_URL}/academics`,
-  gallery: `${process.env.NEXT_PUBLIC_API_BASE_URL}/gallery`,
-  notices: `${process.env.NEXT_PUBLIC_API_BASE_URL}/notices`,
-  results: `${process.env.NEXT_PUBLIC_API_BASE_URL}/results`,
-  upload: `${process.env.NEXT_PUBLIC_API_BASE_URL}/files/upload`,
-  articles: `${process.env.NEXT_PUBLIC_API_BASE_URL}/articles`,
-  alumni: `${process.env.NEXT_PUBLIC_API_BASE_URL}/alumni`,
-  auth: {
-    login: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
-    profile: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/profile`,
-    changePassword: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/change-password`,
-  },
-  users: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/register`,
-}
+  endpoints: {
+    events: `${process.env.NEXT_PUBLIC_API_BASE_URL}/events`,
+    popup: `${process.env.NEXT_PUBLIC_API_BASE_URL}/popup-image`,
+    academics: `${process.env.NEXT_PUBLIC_API_BASE_URL}/academics`,
+    gallery: `${process.env.NEXT_PUBLIC_API_BASE_URL}/gallery`,
+    notices: `${process.env.NEXT_PUBLIC_API_BASE_URL}/notices`,
+    results: `${process.env.NEXT_PUBLIC_API_BASE_URL}/results`,
+    upload: `${process.env.NEXT_PUBLIC_API_BASE_URL}/files/upload`,
+    articles: `${process.env.NEXT_PUBLIC_API_BASE_URL}/articles`,
+    alumni: `${process.env.NEXT_PUBLIC_API_BASE_URL}/alumni`,
+    auth: {
+      login: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
+      profile: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/profile`,
+      changePassword: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/change-password`,
+    },
+    users: `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/register`,
+  }
 
 }
 
